@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>高大迎新茶會小助手</title>
+  <title>活動細流與場佈倒數系統</title>
 
   <!-- PWA 設定 -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="茶會助手">
+  <meta name="apple-mobile-web-app-title" content="活動指揮中樞">
   <link rel="apple-touch-icon" href="icon-512.png">
 
   <!-- 引入 Firebase SDK -->
@@ -17,176 +17,125 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    body {
-      background-color: #f8fafc;
-      color: #1e293b;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .container {
-      width: 100%;
-      max-width: 480px;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    header h1 {
-      font-size: 1.5rem;
-      color: #0f172a;
-    }
-    header p {
-      font-size: 0.9rem;
-      color: #64748b;
-      margin-top: 4px;
-    }
-    .input-card {
-      background: #ffffff;
-      padding: 16px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-    }
-    .form-group {
-      margin-bottom: 12px;
-    }
-    label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      color: #334155;
-    }
-    select, input, button {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
-      font-size: 1rem;
-      outline: none;
-    }
-    select:focus, input:focus {
-      border-color: #3b82f6;
-    }
-    button {
-      background-color: #2563eb;
-      color: #ffffff;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 6px;
-      transition: background 0.2s;
-    }
-    button:active {
-      background-color: #1d4ed8;
-    }
-    .feed-title {
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .status-badge {
-      font-size: 0.75rem;
-      background: #dcfce7;
-      color: #166534;
-      padding: 2px 8px;
-      border-radius: 999px;
-    }
-    .message-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .message-item {
-      background: #ffffff;
-      padding: 12px 16px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      border-left: 4px solid #3b82f6;
-    }
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      color: #64748b;
-      margin-bottom: 4px;
-    }
-    .item-table {
-      font-weight: bold;
-      color: #2563eb;
-    }
-    .item-content {
-      font-size: 1rem;
-      color: #1e293b;
-      word-break: break-word;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
+    body { background-color: #121318; color: #f1f5f9; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+    
+    .container { width: 100%; max-width: 1050px; }
+
+    /* Header */
+    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #2e3440; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .title-area h1 { font-size: 22px; color: #f472b6; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .sync-status { font-size: 12px; background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); padding: 2px 8px; border-radius: 999px; font-weight: 500; }
+    .clock-display { font-size: 14px; color: #94a3b8; margin-top: 4px; font-family: monospace; }
+    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    button { cursor: pointer; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; }
+    button:active { transform: scale(0.97); }
+    .btn-pink { background: #db2777; color: white; }
+    .btn-pink:hover { background: #be185d; }
+    .btn-slate { background: #334155; color: #f1f5f9; }
+    .btn-slate:hover { background: #475569; }
+    .btn-subtle { background: rgba(244, 114, 182, 0.15); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.3); }
+    .btn-subtle:hover { background: rgba(244, 114, 182, 0.25); }
+    .btn-danger { background: #991b1b; color: #fecaca; padding: 4px 8px; font-size: 12px; }
+
+    /* Main Banner Countdown */
+    .hero-banner { background: linear-gradient(135deg, #1e1b2e 0%, #172554 100%); border: 1px solid #3b0764; border-radius: 16px; padding: 28px 20px; text-align: center; margin-bottom: 28px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); }
+    .stage-badge { display: inline-block; background: rgba(244, 114, 182, 0.2); color: #f472b6; padding: 4px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; margin-bottom: 8px; border: 1px solid rgba(244, 114, 182, 0.3); }
+    .big-timer { font-size: clamp(60px, 12vw, 96px); font-weight: 800; font-family: monospace; color: #fb7185; letter-spacing: -2px; line-height: 1; margin: 10px 0; text-shadow: 0 0 20px rgba(251, 113, 133, 0.3); }
+    .next-stage-hint { color: #cbd5e1; font-size: 15px; margin-top: 6px; }
+
+    /* Content Layout */
+    .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 820px) { .main-grid { grid-template-columns: 1fr; } }
+
+    .panel { background: #18181b; border: 1px solid #27272a; border-radius: 14px; padding: 20px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #27272a; padding-bottom: 10px; }
+    .panel-title { font-size: 16px; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
+
+    /* Schedule Section */
+    .schedule-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+    .schedule-item { display: flex; align-items: center; justify-content: space-between; background: #27272a; padding: 10px 14px; border-radius: 10px; border-left: 4px solid #64748b; }
+    .schedule-item.active { border-left-color: #f472b6; background: #2d1d29; }
+    .schedule-info { display: flex; align-items: center; gap: 10px; flex-grow: 1; }
+    .schedule-name { font-weight: 600; font-size: 15px; }
+    input[type="time"] { background: #18181b; color: #f8fafc; border: 1px solid #3f3f46; border-radius: 6px; padding: 4px 8px; font-size: 13px; }
+
+    /* Groups Section */
+    .groups-container { display: flex; flex-direction: column; gap: 16px; max-height: 500px; overflow-y: auto; padding-right: 4px; }
+    .group-card { background: #27272a; border-radius: 10px; padding: 14px; border: 1px solid #3f3f46; }
+    .group-title { font-size: 15px; font-weight: 700; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .task-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .task-item { display: flex; align-items: center; justify-content: space-between; font-size: 14px; color: #e2e8f0; background: #18181b; padding: 6px 10px; border-radius: 6px; }
+    .task-item.done span { text-decoration: line-through; color: #64748b; }
+    .task-left { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    
+    .add-box { display: flex; gap: 6px; margin-top: 8px; }
+    .add-box input[type="text"] { flex-grow: 1; background: #18181b; border: 1px solid #3f3f46; color: white; border-radius: 6px; padding: 6px 10px; font-size: 13px; }
+
+    footer { margin-top: 30px; font-size: 12px; text-align: center; color: #64748b; }
   </style>
 </head>
 <body>
 
   <div class="container">
     <header>
-      <h1>🎉 迎新茶會即時互動</h1>
-      <p>一人送出，全場即時同步！</p>
+      <div class="title-area">
+        <h1>🌸 活動細流與場佈指揮中樞 <span class="sync-status" id="syncStatus">🟢 雲端同步中</span></h1>
+        <div class="clock-display" id="realtimeClock">現在時間：--:--:--</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-subtle" onclick="testGentleVoice()">🌸 語音音量測試</button>
+        <button class="btn-pink" onclick="triggerGlobalBroadcast()">📢 全場廣播</button>
+      </div>
     </header>
 
-    <!-- 輸入區塊 -->
-    <div class="input-card">
-      <div class="form-group">
-        <label for="tableSelect">你的組別 / 桌號</label>
-        <select id="tableSelect">
-          <option value="第 1 桌">第 1 桌</option>
-          <option value="第 2 桌">第 2 桌</option>
-          <option value="第 3 桌">第 3 桌</option>
-          <option value="第 4 桌">第 4 桌</option>
-          <option value="第 5 桌">第 5 桌</option>
-          <option value="第 6 桌">第 6 桌</option>
-          <option value="第 7 桌">第 7 桌</option>
-          <option value="第 8 桌">第 8 桌</option>
-          <option value="隊輔/主持人">隊輔 / 主持人</option>
-        </select>
+    <!-- 主倒數計時大畫幅 -->
+    <div class="hero-banner">
+      <div class="stage-badge" id="currentStageBadge">階段：載入中</div>
+      <div class="big-timer" id="countdownTimer">00:00</div>
+      <div class="next-stage-hint" id="nextStageHint">預計下一階段：--:--</div>
+    </div>
+
+    <!-- 雙欄版面：左側細流、右側組別卡片 -->
+    <div class="main-grid">
+      
+      <!-- 左欄：細流時間設定 -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">⏱️ 細流流程與時間控制</div>
+          <button class="btn-slate" onclick="addNewStage()">+ 新增流程</button>
+        </div>
+        <div class="schedule-list" id="scheduleContainer">
+          <!-- 動態渲染細流列表 -->
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="contentInput">回報答案 / 想說的話</label>
-        <input type="text" id="contentInput" placeholder="例如：我們這桌有 35 個 1 塊錢！" maxlength="80">
+      <!-- 右欄：自訂組別事項 -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📋 各組事項（多人即時同步）</div>
+          <button class="btn-slate" onclick="addNewGroup()">+ 新增組別</button>
+        </div>
+        <div class="groups-container" id="groupsContainer">
+          <!-- 動態渲染組別與卡片 -->
+        </div>
       </div>
 
-      <button onclick="sendData()">即時送出</button>
     </div>
 
-    <!-- 即時牆 -->
-    <div class="feed-title">
-      <span>即時互動牆</span>
-      <span class="status-badge">● 連線同步中</span>
-    </div>
-    <div class="message-list" id="messageContainer">
-      <!-- 即時訊息會動態出現在這裡 -->
-    </div>
+    <footer>高大社團・溫柔控場場佈系統 v3.0 (Firebase 實時多人雲端同步)</footer>
   </div>
 
   <script>
-    // 註冊 PWA Service Worker
+    // 註冊 PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(() => console.log('Service Worker 註冊成功'))
-          .catch(err => console.log('Service Worker 失敗:', err));
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
       });
     }
 
-    // 你的 Firebase 設定
+    // 1. Firebase 初始化
     const firebaseConfig = {
       apiKey: "AIzaSyCi6WM8s9rSxxmb8DQw_hB35uxAQCv5hIw",
       authDomain: "nuk-party.firebaseapp.com",
@@ -198,62 +147,357 @@
       measurementId: "G-NXMMPR25KG"
     };
 
-    // 初始化 Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 送出資料至 Firebase
-    function sendData() {
-      const table = document.getElementById('tableSelect').value;
-      const input = document.getElementById('contentInput');
-      const text = input.value.trim();
+    // 預設資料
+    const defaultSchedule = [
+      { id: 1, name: '集合', time: '17:00' },
+      { id: 2, name: '移動', time: '17:15' },
+      { id: 3, name: '場佈', time: '17:30' },
+      { id: 4, name: '吃晚餐', time: '18:00' },
+      { id: 5, name: '最後準備', time: '18:30' },
+      { id: 6, name: '報到', time: '18:50' }
+    ];
 
-      if (!text) {
-        alert("請輸入內容再送出喔！");
+    let schedule = [];
+    let groups = [];
+    let announcedMilestones = new Set();
+    let initialBroadcastIgnored = false;
+
+    // 頁面啟動：監聽 Firebase 雲端資料庫
+    window.onload = function() {
+      setInterval(updateClockAndTimer, 1000);
+
+      // 監聽連線狀態
+      db.ref('.info/connected').on('value', (snap) => {
+        const el = document.getElementById('syncStatus');
+        if (snap.val() === true) {
+          el.innerText = '🟢 雲端同步中';
+          el.style.color = '#4ade80';
+        } else {
+          el.innerText = '🔴 斷線重連中';
+          el.style.color = '#f87171';
+        }
+      });
+
+      // 監聽細流 schedule
+      db.ref('event_schedule').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          schedule = Array.isArray(val) ? val.filter(Boolean) : Object.values(val);
+        } else {
+          schedule = defaultSchedule;
+          db.ref('event_schedule').set(defaultSchedule);
+        }
+        renderSchedule();
+      });
+
+      // 監聽組別事項 groups
+      db.ref('event_groups').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          const raw = Array.isArray(val) ? val.filter(Boolean) : Object.values(val);
+          groups = raw.map(g => ({
+            ...g,
+            tasks: g.tasks ? (Array.isArray(g.tasks) ? g.tasks.filter(Boolean) : Object.values(g.tasks)) : []
+          }));
+        } else {
+          groups = [];
+        }
+        renderGroups();
+      });
+
+      // 監聽全體即時廣播（任何人按下全場廣播，所有手機一起念！）
+      db.ref('global_broadcast').limitToLast(1).on('child_added', (snapshot) => {
+        if (!initialBroadcastIgnored) {
+          initialBroadcastIgnored = true;
+          return;
+        }
+        const data = snapshot.val();
+        if (data && data.text) {
+          gentleAnnounce(data.text);
+        }
+      });
+    };
+
+    // 同步細流至雲端
+    function saveScheduleToCloud() {
+      db.ref('event_schedule').set(schedule);
+    }
+
+    // 同步組別至雲端
+    function saveGroupsToCloud() {
+      db.ref('event_groups').set(groups);
+    }
+
+    // 觸發全場同步廣播
+    function triggerGlobalBroadcast() {
+      const msg = prompt("請輸入要對全體幹部手機廣播的內容：", "各位幹部辛苦囉，請大家注意目前的細流時間，加油喔！");
+      if (!msg) return;
+      db.ref('global_broadcast').push({
+        text: msg,
+        timestamp: Date.now()
+      });
+    }
+
+    // 2. 時鐘與倒數
+    function updateClockAndTimer() {
+      const now = new Date();
+      document.getElementById('realtimeClock').innerText = `現在時間：${now.toLocaleTimeString('zh-TW', { hour12: false })}`;
+
+      if (!schedule || schedule.length === 0) {
+        document.getElementById('currentStageBadge').innerText = "未設定流程";
+        document.getElementById('countdownTimer').innerText = "--:--";
+        document.getElementById('nextStageHint').innerText = "請在左側新增細流流程";
         return;
       }
 
-      // 寫入即時資料庫
-      db.ref("party_feed").push({
-        table: table,
-        text: text,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        timestamp: Date.now()
-      });
+      const sortedSchedule = [...schedule].sort((a, b) => a.time.localeCompare(b.time));
+      const currentTimeStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+      
+      let currentStage = null;
+      let nextStage = null;
 
-      input.value = ""; // 清空輸入框
+      for (let i = 0; i < sortedSchedule.length; i++) {
+        const itemTime = sortedSchedule[i].time;
+        if (currentTimeStr < itemTime) {
+          nextStage = sortedSchedule[i];
+          currentStage = i > 0 ? sortedSchedule[i - 1] : { name: '準備階段', time: '00:00' };
+          break;
+        }
+      }
+
+      if (!nextStage && sortedSchedule.length > 0) {
+        currentStage = sortedSchedule[sortedSchedule.length - 1];
+        document.getElementById('currentStageBadge').innerText = `當前階段：${currentStage.name}`;
+        document.getElementById('countdownTimer').innerText = "進行中";
+        document.getElementById('nextStageHint').innerText = "所有細流階段已展開";
+        highlightActiveStage(currentStage.id);
+        return;
+      }
+
+      highlightActiveStage(currentStage ? currentStage.id : null);
+      document.getElementById('currentStageBadge').innerText = `當前階段：${currentStage ? currentStage.name : '準備中'}`;
+      
+      const [nh, nm] = nextStage.time.split(':');
+      const targetDate = new Date();
+      targetDate.setHours(parseInt(nh), parseInt(nm), 0, 0);
+
+      const diffMs = targetDate - now;
+      if (diffMs > 0) {
+        const totalSec = Math.floor(diffMs / 1000);
+        const min = Math.floor(totalSec / 60);
+        const sec = totalSec % 60;
+        document.getElementById('countdownTimer').innerText = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        document.getElementById('nextStageHint').innerText = `下一階段：${nextStage.name} (${nextStage.time})`;
+
+        const milestoneKey = `${nextStage.name}_${min}`;
+        if (min === 5 && sec === 0 && !announcedMilestones.has(milestoneKey)) {
+          announcedMilestones.add(milestoneKey);
+          playGentleChime();
+          setTimeout(() => {
+            speakGentle(`各位幹部辛苦囉，距離下一個階段『${nextStage.name}』還有五分鐘，請大家把握時間喔。`);
+          }, 1200);
+        }
+      } else {
+        const arriveKey = `${nextStage.name}_0`;
+        if (!announcedMilestones.has(arriveKey)) {
+          announcedMilestones.add(arriveKey);
+          playGentleChime();
+          setTimeout(() => {
+            speakGentle(`現在時間 ${nextStage.time}，進入『${nextStage.name}』階段，大家加油！`);
+          }, 1200);
+        }
+      }
     }
 
-    // 監聽 Firebase：只要有任何人送出，所有手機瞬間同步渲染出來
-    db.ref("party_feed").orderByChild("timestamp").limitToLast(50).on("child_added", (snapshot) => {
-      const item = snapshot.val();
-      const container = document.getElementById("messageContainer");
+    function highlightActiveStage(activeId) {
+      document.querySelectorAll('.schedule-item').forEach(el => el.classList.remove('active'));
+      if (activeId) {
+        const activeEl = document.getElementById(`schedule-item-${activeId}`);
+        if (activeEl) activeEl.classList.add('active');
+      }
+    }
 
-      const card = document.createElement("div");
-      card.className = "message-item";
-      card.innerHTML = `
-        <div class="item-header">
-          <span class="item-table">${item.table}</span>
-          <span>${item.time}</span>
-        </div>
-        <div class="item-content">${escapeHtml(item.text)}</div>
-      `;
+    // 3. 語音與和弦聲
+    function playGentleChime() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        [523.25, 659.25, 783.99].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.12);
+          gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.12);
+          gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + idx * 0.12 + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.12 + 1.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.12);
+          osc.stop(ctx.currentTime + idx * 0.12 + 1.2);
+        });
+      } catch (e) { console.log(e); }
+    }
 
-      // 最新的訊息放在最上面
-      container.insertBefore(card, container.firstChild);
-    });
+    function speakGentle(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'zh-TW';
+      utter.rate = 0.92;
+      utter.pitch = 1.15;
+      utter.volume = 0.95;
 
-    // 避免特殊字元造成版面跑掉
-    function escapeHtml(string) {
-      return String(string).replace(/[&<>"']/g, function (s) {
-        return {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#039;"
-        }[s];
+      const voices = window.speechSynthesis.getVoices();
+      const softVoice = voices.find(v => v.lang.includes('zh') && (v.name.includes('HsiaoChen') || v.name.includes('Mei-Jia') || v.name.includes('Yating') || v.name.includes('Natural')));
+      if (softVoice) utter.voice = softVoice;
+
+      window.speechSynthesis.speak(utter);
+    }
+
+    function gentleAnnounce(text) {
+      playGentleChime();
+      setTimeout(() => speakGentle(text), 1000);
+    }
+
+    function testGentleVoice() {
+      playGentleChime();
+      setTimeout(() => speakGentle("這是在測試溫柔廣播音量，祝今天的活動一切順利喔！"), 1000);
+    }
+
+    // 4. 細流管理
+    function renderSchedule() {
+      const container = document.getElementById('scheduleContainer');
+      container.innerHTML = '';
+      
+      const sorted = [...schedule].sort((a, b) => a.time.localeCompare(b.time));
+
+      sorted.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'schedule-item';
+        div.id = `schedule-item-${item.id}`;
+        div.innerHTML = `
+          <div class="schedule-info">
+            <input type="time" value="${item.time}" onchange="updateStageTime(${item.id}, this.value)">
+            <span class="schedule-name">${item.name}</span>
+          </div>
+          <button class="btn-danger" onclick="deleteStage(${item.id})">刪除</button>
+        `;
+        container.appendChild(div);
       });
+    }
+
+    function updateStageTime(id, newTime) {
+      const target = schedule.find(s => s.id === id);
+      if (target) {
+        target.time = newTime;
+        saveScheduleToCloud();
+      }
+    }
+
+    function addNewStage() {
+      const name = prompt("請輸入流程名稱（例：隊輔總彩排）：");
+      if (!name) return;
+      const time = prompt("請輸入開始時間（格式如 17:45）：", "18:00");
+      if (!time) return;
+
+      schedule.push({ id: Date.now(), name: name, time: time });
+      saveScheduleToCloud();
+    }
+
+    function deleteStage(id) {
+      schedule = schedule.filter(s => s.id !== id);
+      saveScheduleToCloud();
+    }
+
+    // 5. 組別事項管理
+    function renderGroups() {
+      const container = document.getElementById('groupsContainer');
+      container.innerHTML = '';
+
+      if (groups.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px 0; font-size: 14px;">目前尚未新增組別，點擊右上角「+ 新增組別」開始建立！</div>`;
+        return;
+      }
+
+      groups.forEach((group) => {
+        const card = document.createElement('div');
+        card.className = 'group-card';
+        
+        let tasksHtml = '';
+        (group.tasks || []).forEach(task => {
+          tasksHtml += `
+            <div class="task-item ${task.done ? 'done' : ''}">
+              <div class="task-left" onclick="toggleTask(${group.id}, ${task.id})">
+                <input type="checkbox" ${task.done ? 'checked' : ''} style="cursor:pointer;" onchange="toggleTask(${group.id}, ${task.id})">
+                <span>${task.text}</span>
+              </div>
+              <button class="btn-danger" onclick="deleteTask(${group.id}, ${task.id})" style="padding:2px 6px;">✕</button>
+            </div>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="group-title">
+            <span>📌 ${group.name}</span>
+            <button class="btn-danger" onclick="deleteGroup(${group.id})">刪除組別</button>
+          </div>
+          <div class="task-list">${tasksHtml}</div>
+          <div class="add-box">
+            <input type="text" id="input-group-${group.id}" placeholder="輸入事項並按新增...">
+            <button class="btn-slate" onclick="addTask(${group.id})">新增</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addNewGroup() {
+      const groupName = prompt("請輸入組別名稱（例：場務組、器材組、隊輔組）：");
+      if (!groupName) return;
+      groups.push({ id: Date.now(), name: groupName, tasks: [] });
+      saveGroupsToCloud();
+    }
+
+    function deleteGroup(groupId) {
+      if (confirm("確定要刪除整個組別嗎？")) {
+        groups = groups.filter(g => g.id !== groupId);
+        saveGroupsToCloud();
+      }
+    }
+
+    function addTask(groupId) {
+      const input = document.getElementById(`input-group-${groupId}`);
+      const text = input.value.trim();
+      if (!text) return;
+
+      const group = groups.find(g => g.id === groupId);
+      if (group) {
+        if (!group.tasks) group.tasks = [];
+        group.tasks.push({ id: Date.now(), text: text, done: false });
+        saveGroupsToCloud();
+      }
+    }
+
+    function toggleTask(groupId, taskId) {
+      const group = groups.find(g => g.id === groupId);
+      if (group && group.tasks) {
+        const task = group.tasks.find(t => t.id === taskId);
+        if (task) {
+          task.done = !task.done;
+          saveGroupsToCloud();
+        }
+      }
+    }
+
+    function deleteTask(groupId, taskId) {
+      const group = groups.find(g => g.id === groupId);
+      if (group && group.tasks) {
+        group.tasks = group.tasks.filter(t => t.id !== taskId);
+        saveGroupsToCloud();
+      }
     }
   </script>
 </body>
