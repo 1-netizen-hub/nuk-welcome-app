@@ -39,6 +39,8 @@
     .btn-subtle:hover { background: rgba(244, 114, 182, 0.25); }
     .btn-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
     .btn-warning:hover { background: rgba(245, 158, 11, 0.3); }
+    .btn-success { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .btn-success:hover { background: rgba(34, 197, 94, 0.3); }
     .btn-danger { background: #991b1b; color: #fecaca; padding: 3px 6px; font-size: 11px; }
 
     /* 身分篩選專區 */
@@ -53,7 +55,7 @@
     .next-stage-hint { color: #cbd5e1; font-size: 14px; margin-top: 4px; }
 
     /* 三欄排版架構 */
-    .main-grid { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 18px; }
+    .main-grid { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 18px; margin-bottom: 24px; }
     @media (max-width: 1050px) { .main-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } }
 
@@ -93,11 +95,10 @@
     .task-item.done span.task-text { text-decoration: line-through; color: #64748b; }
     .task-left { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-grow: 1; flex-wrap: wrap; }
     
-    /* 負責人 Tag */
+    /* 標籤 */
     .owner-tag { font-size: 11px; background: rgba(148, 163, 184, 0.15); color: #cbd5e1; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(148, 163, 184, 0.25); white-space: nowrap; cursor: pointer; }
     .owner-tag:hover { background: rgba(148, 163, 184, 0.3); border-color: #38bdf8; }
 
-    /* 執行時間 Tag */
     .time-tag { font-size: 11px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.25); white-space: nowrap; cursor: pointer; font-family: monospace; }
     .time-tag:hover { background: rgba(56, 189, 248, 0.25); }
     .time-tag.overdue { background: rgba(239, 68, 68, 0.25); color: #f87171; border-color: #ef4444; font-weight: bold; animation: pulse 1.5s infinite; }
@@ -113,14 +114,31 @@
     .input-task-owner { width: 95px; }
     .input-task-time { width: 85px; }
 
-    /* 負責人彙整卡片樣式 */
+    /* 負責人彙整卡片 */
     .owner-container { display: flex; flex-direction: column; gap: 12px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
     .owner-card { background: #27272a; border-radius: 10px; padding: 12px 14px; border: 1px solid #3f3f46; }
     .owner-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .owner-card-title { font-size: 14px; font-weight: 700; color: #a78bfa; display: flex; align-items: center; gap: 6px; }
     .owner-task-badge { font-size: 10px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 1px 5px; border-radius: 4px; }
 
-    footer { margin-top: 30px; font-size: 12px; text-align: center; color: #64748b; }
+    /* 歷史專區摺疊面板 */
+    .history-panel { background: #18181b; border: 1px solid #3b0764; border-radius: 14px; padding: 16px; margin-bottom: 24px; transition: all 0.2s ease; }
+    .history-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+    .history-header-title { font-size: 15px; font-weight: 700; color: #c084fc; display: flex; align-items: center; gap: 8px; }
+    .history-panel.collapsed .history-body { display: none; }
+    .history-panel.collapsed .history-collapse-icon { transform: rotate(-90deg); }
+    .history-collapse-icon { font-size: 12px; transition: transform 0.2s ease; color: #94a3b8; }
+    
+    .history-body { margin-top: 14px; border-top: 1px solid #27272a; padding-top: 12px; }
+    .history-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 10px; }
+    .history-card { background: #27272a; border: 1px solid #3f3f46; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
+    .history-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .history-card-name { font-weight: 700; font-size: 14px; color: #f1f5f9; }
+    .history-card-date { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+    .history-card-desc { font-size: 12px; color: #cbd5e1; }
+    .history-card-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
+
+    footer { margin-top: 10px; font-size: 12px; text-align: center; color: #64748b; }
   </style>
 </head>
 <body>
@@ -132,6 +150,7 @@
         <div class="clock-display" id="realtimeClock">現在時間：--:--:--</div>
       </div>
       <div class="header-actions">
+        <button class="btn-success" onclick="saveCurrentToHistory()">💾 封存為歷史紀錄</button>
         <button class="btn-subtle" onclick="testGentleVoice()">🌸 語音測試</button>
         <button class="btn-pink" onclick="triggerGlobalBroadcast()">📢 全場廣播</button>
       </div>
@@ -190,7 +209,23 @@
 
     </div>
 
-    <footer>高大社團・溫柔控場場佈系統 v8.0 (各組事項與個人彙整皆依執行時間排序)</footer>
+    <!-- 歷史專區摺疊面板 -->
+    <div class="history-panel collapsed" id="historyPanel">
+      <div class="history-header" onclick="toggleHistoryPanel()">
+        <div class="history-header-title">
+          <span class="history-collapse-icon">▼</span>
+          <span>📂 活動歷史紀錄與範本庫</span>
+          <span style="font-size: 11px; color: #94a3b8; font-weight: normal;">(點擊展開/收合)</span>
+        </div>
+        <button class="btn-slate" onclick="event.stopPropagation(); saveCurrentToHistory()">+ 封存目前活動</button>
+      </div>
+      <div class="history-body">
+        <div style="font-size: 12px; color: #94a3b8;">可將歷次茶會、社課活動封存至雲端，往後隨時一鍵還原為工作範本：</div>
+        <div class="history-list" id="historyContainer"></div>
+      </div>
+    </div>
+
+    <footer>高大社團・溫柔控場場佈系統 v9.0 (整合歷史紀錄摺疊庫與範本還原)</footer>
   </div>
 
   <script>
@@ -225,6 +260,7 @@
 
     let schedule = [];
     let groups = [];
+    let historyEvents = {};
     let collapsedGroupIds = new Set();
     let currentFilterOwner = 'ALL';
     let announcedMilestones = new Set();
@@ -235,7 +271,6 @@
       return ownerStr.split(/[,，、/／\s]+/).map(s => s.trim()).filter(Boolean);
     }
 
-    // 核心時間排序函式：有時間的排前面（升序），無時間的排最後，時間相同的照建立順序
     function compareTaskTime(a, b) {
       if (a.time && b.time) {
         const cmp = a.time.localeCompare(b.time);
@@ -260,6 +295,7 @@
         }
       });
 
+      // 監聽細流
       db.ref('event_schedule').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -271,6 +307,7 @@
         renderSchedule();
       });
 
+      // 監聽組別事項
       db.ref('event_groups').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -287,6 +324,13 @@
         renderOwnerSummary();
       });
 
+      // 監聽歷史紀錄
+      db.ref('history_events').on('value', (snapshot) => {
+        historyEvents = snapshot.val() || {};
+        renderHistoryList();
+      });
+
+      // 監聽全場廣播
       db.ref('global_broadcast').limitToLast(1).on('child_added', (snapshot) => {
         if (!initialBroadcastIgnored) {
           initialBroadcastIgnored = true;
@@ -302,6 +346,103 @@
     function saveScheduleToCloud() { db.ref('event_schedule').set(schedule); }
     function saveGroupsToCloud() { db.ref('event_groups').set(groups); }
 
+    // 歷史紀錄相關邏輯
+    function toggleHistoryPanel() {
+      document.getElementById('historyPanel').classList.toggle('collapsed');
+    }
+
+    function saveCurrentToHistory() {
+      const name = prompt("請輸入此活動的存檔名稱（例：2026/09 迎新茶會、第1次社課）：");
+      if (!name || !name.trim()) return;
+
+      const dateStr = new Date().toLocaleString('zh-TW', { hour12: false });
+      const record = {
+        name: name.trim(),
+        savedAt: dateStr,
+        schedule: schedule,
+        groups: groups
+      };
+
+      db.ref('history_events').push(record, (err) => {
+        if (!err) {
+          alert(`🎉 成功封存「${name.trim()}」至歷史庫！`);
+        }
+      });
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById('historyContainer');
+      container.innerHTML = '';
+
+      const keys = Object.keys(historyEvents);
+      if (keys.length === 0) {
+        container.innerHTML = `<div style="color: #64748b; font-size: 13px; grid-column: 1/-1; padding: 10px 0;">尚無歷史紀錄。辦完活動後點擊「封存目前活動」即可建立範本。</div>`;
+        return;
+      }
+
+      keys.reverse().forEach(key => {
+        const item = historyEvents[key];
+        const scheduleCount = (item.schedule || []).length;
+        const groupCount = (item.groups || []).length;
+
+        const card = document.createElement('div');
+        card.className = 'history-card';
+        card.innerHTML = `
+          <div>
+            <div class="history-card-top">
+              <span class="history-card-name">📌 ${escapeHtml(item.name)}</span>
+            </div>
+            <div class="history-card-date">🕒 存檔時間：${escapeHtml(item.savedAt || '--')}</div>
+            <div class="history-card-desc" style="margin-top: 6px;">
+              包含 ${scheduleCount} 個流程階段、${groupCount} 個工作組別
+            </div>
+          </div>
+          <div class="history-card-actions">
+            <button class="btn-slate" onclick="loadHistoryRecord('${key}')">📂 載入此活動</button>
+            <button class="btn-danger" onclick="deleteHistoryRecord('${key}')">刪除</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function loadHistoryRecord(key) {
+      const item = historyEvents[key];
+      if (!item) return;
+
+      const confirmLoad = confirm(`確定要將目前畫面替換為「${item.name}」嗎？\n（當前畫面會被覆蓋，建議先將目前活動存檔）`);
+      if (!confirmLoad) return;
+
+      const resetChecks = confirm(`是否要將所有事項的打勾狀態重設為「未完成」？\n按「確定」：乾淨重跑活動\n按「取消」：保留當時打勾進度`);
+
+      let loadedSchedule = item.schedule || defaultSchedule;
+      let loadedGroups = item.groups || [];
+
+      if (resetChecks) {
+        loadedGroups = loadedGroups.map(g => ({
+          ...g,
+          tasks: (g.tasks || []).map(t => ({ ...t, done: false }))
+        }));
+      }
+
+      // 同步寫入雲端
+      db.ref('event_schedule').set(loadedSchedule);
+      db.ref('event_groups').set(loadedGroups, (err) => {
+        if (!err) {
+          alert(`✅ 已成功載入「${item.name}」！全場幹部畫面已同步更新。`);
+        }
+      });
+    }
+
+    function deleteHistoryRecord(key) {
+      const item = historyEvents[key];
+      const name = item ? item.name : '此紀錄';
+      if (confirm(`確定要從歷史庫中永久刪除「${name}」嗎？`)) {
+        db.ref(`history_events/${key}`).remove();
+      }
+    }
+
+    // 篩選與渲染管理
     function updateFilterOptions() {
       const select = document.getElementById('userRoleFilter');
       const currentSelected = select.value;
@@ -341,6 +482,7 @@
       renderOwnerSummary();
     }
 
+    // 時鐘與倒數
     function updateClockAndTimer() {
       const now = new Date();
       document.getElementById('realtimeClock').innerText = `現在時間：${now.toLocaleTimeString('zh-TW', { hour12: false })}`;
@@ -490,7 +632,7 @@
       db.ref('global_broadcast').push({ text: msg, timestamp: Date.now() });
     }
 
-    // 細流流程
+    // 細流操作
     function renderSchedule() {
       const container = document.getElementById('scheduleContainer');
       container.innerHTML = '';
@@ -551,7 +693,7 @@
       }
     }
 
-    // 各組事項管理（加入依執行時間排序）
+    // 各組事項管理
     function renderGroups() {
       const container = document.getElementById('groupsContainer');
       container.innerHTML = '';
@@ -564,8 +706,6 @@
       groups.forEach((group) => {
         const isCollapsed = collapsedGroupIds.has(group.id);
         const allTasks = group.tasks || [];
-
-        // 依執行時間排序
         const sortedTasks = [...allTasks].sort(compareTaskTime);
         
         const visibleTasks = sortedTasks.filter(task => {
@@ -654,7 +794,7 @@
       });
     }
 
-    // 負責人看板（加入依執行時間排序）
+    // 負責人看板
     function renderOwnerSummary() {
       const container = document.getElementById('ownerContainer');
       container.innerHTML = '';
@@ -698,7 +838,6 @@
 
       ownerNames.forEach(owner => {
         const tasks = ownerMap[owner];
-        // 依執行時間排序個人清單
         tasks.sort(compareTaskTime);
 
         const total = tasks.length;
