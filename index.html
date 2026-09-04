@@ -18,132 +18,145 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
-    body { background-color: #121318; color: #f1f5f9; min-height: 100vh; padding: 16px; display: flex; flex-direction: column; align-items: center; }
+    body { background-color: #0d0e12; color: #f1f5f9; min-height: 100vh; padding: 16px; display: flex; flex-direction: column; align-items: center; }
     
-    .container { width: 100%; max-width: 1300px; }
+    .container { width: 100%; max-width: 1320px; }
 
     /* Header */
-    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #2e3440; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-    .title-area h1 { font-size: 20px; color: #f472b6; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .sync-status { font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); padding: 2px 8px; border-radius: 999px; font-weight: 500; }
-    .clock-display { font-size: 13px; color: #94a3b8; margin-top: 4px; font-family: monospace; }
+    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #1f2430; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+    .title-area h1 { font-size: 19px; color: #f472b6; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .sync-status { font-size: 11px; background: rgba(34, 197, 94, 0.12); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.25); padding: 2px 8px; border-radius: 999px; font-weight: 500; }
+    .clock-display { font-size: 13px; color: #94a3b8; margin-top: 3px; font-family: monospace; }
     .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    button { cursor: pointer; border: none; padding: 7px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; }
+    button { cursor: pointer; border: none; padding: 6px 12px; border-radius: 7px; font-weight: 600; font-size: 12px; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; }
     button:active { transform: scale(0.97); }
     .btn-pink { background: #db2777; color: white; }
     .btn-pink:hover { background: #be185d; }
-    .btn-slate { background: #334155; color: #f1f5f9; }
-    .btn-slate:hover { background: #475569; }
-    .btn-subtle { background: rgba(244, 114, 182, 0.15); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.3); }
-    .btn-subtle:hover { background: rgba(244, 114, 182, 0.25); }
-    .btn-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
-    .btn-warning:hover { background: rgba(245, 158, 11, 0.3); }
-    .btn-success { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
-    .btn-success:hover { background: rgba(34, 197, 94, 0.3); }
-    .btn-sheet { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
-    .btn-sheet:hover { background: rgba(16, 185, 129, 0.3); }
-    .btn-danger { background: #991b1b; color: #fecaca; padding: 3px 6px; font-size: 11px; }
+    .btn-slate { background: #27272a; color: #f1f5f9; border: 1px solid #3f3f46; }
+    .btn-slate:hover { background: #3f3f46; }
+    .btn-subtle { background: rgba(244, 114, 182, 0.12); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.25); }
+    .btn-subtle:hover { background: rgba(244, 114, 182, 0.2); }
+    .btn-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .btn-warning:hover { background: rgba(245, 158, 11, 0.25); }
+    .btn-success { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .btn-success:hover { background: rgba(34, 197, 94, 0.25); }
+    .btn-sheet { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .btn-sheet:hover { background: rgba(16, 185, 129, 0.25); }
+    .btn-ghost-danger { background: transparent; color: #64748b; border: 1px solid transparent; padding: 3px 6px; font-size: 12px; border-radius: 4px; }
+    .btn-ghost-danger:hover { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
 
     /* 身分篩選專區 */
-    .filter-bar { background: #1e1b2e; border: 1px solid #3b0764; border-radius: 12px; padding: 10px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .filter-title { font-size: 14px; font-weight: 600; color: #f472b6; display: flex; align-items: center; gap: 6px; }
-    .filter-select { background: #121318; border: 1px solid #6366f1; color: #f1f5f9; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; outline: none; cursor: pointer; }
+    .filter-bar { background: #16161e; border: 1px solid #282538; border-radius: 10px; padding: 8px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .filter-title { font-size: 13px; font-weight: 600; color: #f472b6; display: flex; align-items: center; gap: 6px; }
+    .filter-select { background: #0d0e12; border: 1px solid #4f46e5; color: #f1f5f9; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; outline: none; cursor: pointer; }
 
-    /* 主倒數計時大畫幅 */
-    .hero-banner { background: linear-gradient(135deg, #1e1b2e 0%, #172554 100%); border: 1px solid #3b0764; border-radius: 16px; padding: 24px 16px; text-align: center; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); }
-    .stage-badge { display: inline-block; background: rgba(244, 114, 182, 0.2); color: #f472b6; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 8px; border: 1px solid rgba(244, 114, 182, 0.3); }
-    .big-timer { font-size: clamp(52px, 10vw, 84px); font-weight: 800; font-family: monospace; color: #fb7185; letter-spacing: -2px; line-height: 1; margin: 8px 0; text-shadow: 0 0 20px rgba(251, 113, 133, 0.3); }
-    .next-stage-hint { color: #cbd5e1; font-size: 14px; margin-top: 4px; }
+    /* 主倒數計時看板 (緊湊高質感) */
+    .hero-banner { 
+      background: linear-gradient(135deg, #181528 0%, #111c38 100%); 
+      border: 1px solid #2d1f47; 
+      border-radius: 14px; 
+      padding: 16px 20px; 
+      margin-bottom: 20px; 
+      box-shadow: 0 8px 20px -6px rgba(0,0,0,0.5); 
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .hero-left { display: flex; flex-direction: column; gap: 4px; }
+    .stage-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(244, 114, 182, 0.15); color: #f472b6; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; width: fit-content; border: 1px solid rgba(244, 114, 182, 0.25); }
+    .hero-stage-name { font-size: 26px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
+    .hero-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+    .big-timer { font-size: clamp(38px, 6vw, 54px); font-weight: 800; font-family: monospace; color: #fb7185; line-height: 1; text-shadow: 0 0 15px rgba(251, 113, 133, 0.25); }
+    .next-stage-hint { color: #94a3b8; font-size: 12px; margin-top: 4px; }
 
     /* 三欄排版架構 */
-    .main-grid { display: grid; grid-template-columns: 1fr 1.2fr 1.1fr; gap: 18px; margin-bottom: 24px; }
-    @media (max-width: 1050px) { .main-grid { grid-template-columns: 1fr 1fr; } }
+    .main-grid { display: grid; grid-template-columns: 1fr 1.25fr 1.05fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } }
 
-    .panel { background: #18181b; border: 1px solid #27272a; border-radius: 14px; padding: 16px; }
-    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid #27272a; padding-bottom: 10px; flex-wrap: wrap; gap: 8px; }
-    .panel-title { font-size: 15px; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
+    .panel { background: #13141a; border: 1px solid #20222c; border-radius: 12px; padding: 14px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #20222c; padding-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+    .panel-title { font-size: 14px; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 6px; }
 
     /* Schedule Section */
-    .schedule-list { display: flex; flex-direction: column; gap: 10px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
-    .schedule-item { display: flex; align-items: center; justify-content: space-between; background: #27272a; padding: 10px 12px; border-radius: 10px; border-left: 4px solid #64748b; }
-    .schedule-item.active { border-left-color: #f472b6; background: #2d1d29; }
+    .schedule-list { display: flex; flex-direction: column; gap: 8px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
+    .schedule-item { display: flex; align-items: center; justify-content: space-between; background: #1a1b24; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #475569; }
+    .schedule-item.active { border-left-color: #f472b6; background: #261928; }
     .schedule-info { display: flex; align-items: center; gap: 8px; flex-grow: 1; flex-wrap: wrap; }
-    .schedule-name { font-weight: 600; font-size: 14px; }
-    input[type="time"] { background: #18181b; color: #f8fafc; border: 1px solid #3f3f46; border-radius: 6px; padding: 3px 6px; font-size: 12px; }
+    .schedule-name { font-weight: 600; font-size: 13px; }
+    input[type="time"] { background: #0d0e12; color: #f8fafc; border: 1px solid #333846; border-radius: 5px; padding: 2px 5px; font-size: 12px; }
 
-    .mute-toggle-btn { background: transparent; border: 1px solid #3f3f46; border-radius: 6px; padding: 3px 6px; font-size: 12px; color: #94a3b8; cursor: pointer; }
-    .mute-toggle-btn.muted { color: #f87171; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1); }
+    .mute-toggle-btn { background: transparent; border: 1px solid #333846; border-radius: 5px; padding: 2px 5px; font-size: 11px; color: #94a3b8; cursor: pointer; }
+    .mute-toggle-btn.muted { color: #f87171; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.08); }
 
     /* Groups Section */
-    .groups-container { display: flex; flex-direction: column; gap: 14px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
-    .group-card { background: #27272a; border-radius: 10px; padding: 12px 14px; border: 1px solid #3f3f46; transition: all 0.2s ease; }
+    .groups-container { display: flex; flex-direction: column; gap: 12px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
+    .group-card { background: #1a1b24; border-radius: 9px; padding: 10px 12px; border: 1px solid #282a36; transition: all 0.2s ease; }
     
     .group-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-    .group-title-left { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #38bdf8; }
-    .collapse-icon { font-size: 12px; transition: transform 0.2s ease; color: #94a3b8; }
+    .group-title-left { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #38bdf8; }
+    .collapse-icon { font-size: 11px; transition: transform 0.2s ease; color: #64748b; }
     .group-card.collapsed .collapse-icon { transform: rotate(-90deg); }
     .group-card.collapsed .group-body { display: none; }
 
     /* 進度條 */
-    .progress-wrap { margin-top: 8px; margin-bottom: 10px; }
-    .progress-meta { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
-    .progress-bar-bg { width: 100%; height: 5px; background: #18181b; border-radius: 999px; overflow: hidden; }
+    .progress-wrap { margin-top: 6px; margin-bottom: 8px; }
+    .progress-meta { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; margin-bottom: 3px; }
+    .progress-bar-bg { width: 100%; height: 4px; background: #0d0e12; border-radius: 999px; overflow: hidden; }
     .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #38bdf8, #4ade80); width: 0%; transition: width 0.3s ease; }
 
-    .task-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-    .task-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #e2e8f0; background: #18181b; padding: 7px 10px; border-radius: 6px; gap: 8px; }
-    .task-item.done span.task-text { text-decoration: line-through; color: #64748b; }
-    .task-left { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-grow: 1; flex-wrap: wrap; }
+    .task-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    .task-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #e2e8f0; background: #13141a; padding: 6px 9px; border-radius: 6px; gap: 6px; border: 1px solid transparent; }
+    .task-item:hover { border-color: #272a38; }
+    .task-item.done span.task-text { text-decoration: line-through; color: #475569; }
+    .task-left { display: flex; align-items: center; gap: 7px; cursor: pointer; flex-grow: 1; flex-wrap: wrap; }
     
-    /* 標籤 */
-    .owner-tag { font-size: 11px; background: rgba(148, 163, 184, 0.15); color: #cbd5e1; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(148, 163, 184, 0.25); white-space: nowrap; cursor: pointer; }
-    .owner-tag:hover { background: rgba(148, 163, 184, 0.3); border-color: #38bdf8; }
+    /* 負責人 Tag (高對比微紫標籤) */
+    .owner-tag { font-size: 11px; background: rgba(167, 139, 250, 0.12); color: #c4b5fd; padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(167, 139, 250, 0.25); white-space: nowrap; cursor: pointer; }
+    .owner-tag:hover { background: rgba(167, 139, 250, 0.25); }
 
-    .time-tag { font-size: 11px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.25); white-space: nowrap; cursor: pointer; font-family: monospace; }
-    .time-tag:hover { background: rgba(56, 189, 248, 0.25); }
-    .time-tag.overdue { background: rgba(239, 68, 68, 0.25); color: #f87171; border-color: #ef4444; font-weight: bold; animation: pulse 1.5s infinite; }
+    /* 時段標籤 (低調微光，逾期不再刺眼) */
+    .time-tag { font-size: 11px; background: rgba(56, 189, 248, 0.08); color: #7dd3fc; padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2); white-space: nowrap; cursor: pointer; font-family: monospace; }
+    .time-tag:hover { background: rgba(56, 189, 248, 0.18); }
+    .time-tag.overdue { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.35); font-weight: 600; }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-
-    .add-box { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
-    .add-box input[type="text"], .add-box input[type="time"] { background: #18181b; border: 1px solid #3f3f46; color: white; border-radius: 6px; padding: 5px 8px; font-size: 12px; }
-    .input-task-text { flex-grow: 1; min-width: 130px; }
-    .input-task-owner { width: 90px; }
-    .time-range-group { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #94a3b8; }
+    .add-box { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
+    .add-box input[type="text"], .add-box input[type="time"] { background: #0d0e12; border: 1px solid #2c303f; color: white; border-radius: 5px; padding: 4px 7px; font-size: 12px; }
+    .input-task-text { flex-grow: 1; min-width: 120px; }
+    .input-task-owner { width: 85px; }
+    .time-range-group { display: flex; align-items: center; gap: 2px; font-size: 11px; color: #64748b; }
 
     /* 負責人彙整卡片 */
-    .owner-container { display: flex; flex-direction: column; gap: 12px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
-    .owner-card { background: #27272a; border-radius: 10px; padding: 12px 14px; border: 1px solid #3f3f46; }
-    .owner-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .owner-card-title { font-size: 14px; font-weight: 700; color: #a78bfa; display: flex; align-items: center; gap: 6px; }
-    .owner-task-badge { font-size: 10px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 1px 5px; border-radius: 4px; }
+    .owner-container { display: flex; flex-direction: column; gap: 10px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
+    .owner-card { background: #1a1b24; border-radius: 9px; padding: 10px 12px; border: 1px solid #282a36; }
+    .owner-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    .owner-card-title { font-size: 13px; font-weight: 700; color: #c084fc; display: flex; align-items: center; gap: 5px; }
+    .owner-task-badge { font-size: 10px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 1px 4px; border-radius: 3px; }
 
-    /* 空窗提醒框 */
-    .idle-alert-box { background: rgba(245, 158, 11, 0.1); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 6px; padding: 6px 10px; font-size: 11px; color: #fbbf24; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+    /* 空窗提醒框 (柔和琥珀橘) */
+    .idle-alert-box { background: rgba(245, 158, 11, 0.08); border: 1px dashed rgba(245, 158, 11, 0.3); border-radius: 5px; padding: 5px 8px; font-size: 11px; color: #fcd34d; margin-top: 6px; }
 
     /* 歷史專區摺疊面板 */
-    .history-panel { background: #18181b; border: 1px solid #3b0764; border-radius: 14px; padding: 16px; margin-bottom: 24px; transition: all 0.2s ease; }
+    .history-panel { background: #13141a; border: 1px solid #282138; border-radius: 12px; padding: 14px; margin-bottom: 20px; transition: all 0.2s ease; }
     .history-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-    .history-header-title { font-size: 15px; font-weight: 700; color: #c084fc; display: flex; align-items: center; gap: 8px; }
+    .history-header-title { font-size: 14px; font-weight: 700; color: #c084fc; display: flex; align-items: center; gap: 6px; }
     .history-panel.collapsed .history-body { display: none; }
     .history-panel.collapsed .history-collapse-icon { transform: rotate(-90deg); }
-    .history-collapse-icon { font-size: 12px; transition: transform 0.2s ease; color: #94a3b8; }
+    .history-collapse-icon { font-size: 11px; transition: transform 0.2s ease; color: #64748b; }
     
-    .history-body { margin-top: 14px; border-top: 1px solid #27272a; padding-top: 12px; }
-    .history-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 10px; }
-    .history-card { background: #27272a; border: 1px solid #3f3f46; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
+    .history-body { margin-top: 12px; border-top: 1px solid #20222c; padding-top: 10px; }
+    .history-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-top: 8px; }
+    .history-card { background: #1a1b24; border: 1px solid #2c303f; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
     .history-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    .history-card-name { font-weight: 700; font-size: 14px; color: #f1f5f9; }
-    .history-card-date { font-size: 11px; color: #94a3b8; margin-top: 2px; }
-    .history-card-desc { font-size: 12px; color: #cbd5e1; }
-    .history-card-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
+    .history-card-name { font-weight: 700; font-size: 13px; color: #f1f5f9; }
+    .history-card-date { font-size: 10px; color: #64748b; margin-top: 2px; }
+    .history-card-desc { font-size: 11px; color: #94a3b8; }
+    .history-card-actions { display: flex; gap: 5px; justify-content: flex-end; margin-top: 4px; }
 
-    footer { margin-top: 10px; font-size: 12px; text-align: center; color: #64748b; }
+    footer { margin-top: 8px; font-size: 11px; text-align: center; color: #475569; }
   </style>
 </head>
 <body>
@@ -156,7 +169,7 @@
       </div>
       <div class="header-actions">
         <button class="btn-sheet" id="openSheetBtn" onclick="openSpreadsheet()" title="開啟 Google 試算表">📊 試算表細流</button>
-        <button class="btn-success" onclick="saveCurrentToHistory()">💾 封存為歷史紀錄</button>
+        <button class="btn-success" onclick="saveCurrentToHistory()">💾 封存歷史</button>
         <button class="btn-subtle" onclick="testGentleVoice()">🌸 語音測試</button>
         <button class="btn-pink" onclick="triggerGlobalBroadcast()">📢 全場廣播</button>
       </div>
@@ -165,19 +178,24 @@
     <!-- 身分專屬篩選列 -->
     <div class="filter-bar">
       <div class="filter-title">
-        <span>👤 我是幹部：</span>
+        <span>👤 聚焦幹部：</span>
         <select class="filter-select" id="userRoleFilter" onchange="onFilterChange()">
           <option value="ALL">👀 全部人員（顯示所有人工作）</option>
         </select>
       </div>
-      <span style="font-size: 12px; color: #94a3b8;" id="filterHintText">已顯示全場完整項目</span>
+      <span style="font-size: 11px; color: #64748b;" id="filterHintText">已顯示全場完整項目</span>
     </div>
 
-    <!-- 主倒數計時大畫幅 -->
+    <!-- 主倒數計時看板 (精緻緊湊化) -->
     <div class="hero-banner">
-      <div class="stage-badge" id="currentStageBadge">階段：載入中</div>
-      <div class="big-timer" id="countdownTimer">00:00</div>
-      <div class="next-stage-hint" id="nextStageHint">預計下一階段：--:--</div>
+      <div class="hero-left">
+        <span class="stage-pill" id="stagePillTag">⚡ 當前階段</span>
+        <div class="hero-stage-name" id="currentStageName">載入中...</div>
+      </div>
+      <div class="hero-right">
+        <div class="big-timer" id="countdownTimer">--:--</div>
+        <div class="next-stage-hint" id="nextStageHint">預計下一階段：--:--</div>
+      </div>
     </div>
 
     <!-- 三欄版面 -->
@@ -187,8 +205,8 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">⏱️ 細流流程控制</div>
-          <div style="display: flex; gap: 6px;">
-            <button class="btn-sheet" onclick="editSpreadsheetUrl()" style="padding: 4px 8px; font-size: 11px;">🔗 設定試算表</button>
+          <div style="display: flex; gap: 5px;">
+            <button class="btn-sheet" onclick="editSpreadsheetUrl()" style="padding: 3px 6px; font-size: 11px;">🔗 試算表</button>
             <button class="btn-slate" onclick="addNewStage()">+ 流程</button>
           </div>
         </div>
@@ -199,19 +217,20 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">📋 各組事項與進度</div>
-          <div style="display: flex; gap: 6px;">
-            <button class="btn-warning" onclick="resetAllTaskChecks()" title="保留事項，僅將打勾重設為未完成">🔄 重設打勾</button>
+          <div style="display: flex; gap: 5px;">
+            <button class="btn-slate" onclick="toggleAllGroupsCollapse()" id="toggleAllCollapseBtn" style="padding: 3px 7px; font-size: 11px;">全部收合</button>
+            <button class="btn-warning" onclick="resetAllTaskChecks()" title="保留事項，僅將打勾重設為未完成" style="padding: 3px 7px; font-size: 11px;">🔄 重設打勾</button>
             <button class="btn-slate" onclick="addNewGroup()">+ 組別</button>
           </div>
         </div>
         <div class="groups-container" id="groupsContainer"></div>
       </div>
 
-      <!-- 欄位 3：依負責人彙整清單（含空窗提醒） -->
+      <!-- 欄位 3：依負責人彙整清單 -->
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">👤 個人專屬工作與空窗監測</div>
-          <span style="font-size: 11px; color: #94a3b8;">自動檢測時段空窗</span>
+          <span style="font-size: 10px; color: #64748b;">自動檢測時段空窗</span>
         </div>
         <div class="owner-container" id="ownerContainer"></div>
       </div>
@@ -224,17 +243,17 @@
         <div class="history-header-title">
           <span class="history-collapse-icon">▼</span>
           <span>📂 活動歷史紀錄與範本庫</span>
-          <span style="font-size: 11px; color: #94a3b8; font-weight: normal;">(點擊展開/收合)</span>
+          <span style="font-size: 11px; color: #64748b; font-weight: normal;">(點擊展開)</span>
         </div>
         <button class="btn-slate" onclick="event.stopPropagation(); saveCurrentToHistory()">+ 封存目前活動</button>
       </div>
       <div class="history-body">
-        <div style="font-size: 12px; color: #94a3b8;">可將歷次茶會、社課活動封存至雲端，往後隨時一鍵還原為工作範本：</div>
+        <div style="font-size: 11px; color: #64748b;">歷次茶會、社課活動雲端備份，隨時可一鍵還原為工作範本：</div>
         <div class="history-list" id="historyContainer"></div>
       </div>
     </div>
 
-    <footer>高大社團・溫柔控場場佈系統 v11.0 (整合 Google 試算表雲端綁定與直達)</footer>
+    <footer>高大社團・溫柔控場場佈系統 v12.0 (視覺清爽升級版)</footer>
   </div>
 
   <script>
@@ -272,6 +291,7 @@
     let historyEvents = {};
     let spreadsheetUrl = '';
     let collapsedGroupIds = new Set();
+    let areAllCollapsed = false;
     let currentFilterOwner = 'ALL';
     let announcedMilestones = new Set();
     let initialBroadcastIgnored = false;
@@ -296,7 +316,7 @@
     function formatTimeLabel(task) {
       const s = task.startTime || task.time || '';
       const e = task.endTime || '';
-      if (s && e) return `${s} ~ ${e}`;
+      if (s && e) return `${s}~${e}`;
       if (s) return `${s}`;
       return '';
     }
@@ -315,20 +335,12 @@
         }
       });
 
-      // 監聽試算表連結
       db.ref('spreadsheet_url').on('value', (snapshot) => {
         spreadsheetUrl = snapshot.val() || '';
         const btn = document.getElementById('openSheetBtn');
-        if (spreadsheetUrl) {
-          btn.style.opacity = '1';
-          btn.title = '開啟 Google 試算表完整細流';
-        } else {
-          btn.style.opacity = '0.6';
-          btn.title = '尚未設定試算表連結（點擊左側設定）';
-        }
+        btn.style.opacity = spreadsheetUrl ? '1' : '0.6';
       });
 
-      // 監聽細流
       db.ref('event_schedule').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -341,7 +353,6 @@
         renderOwnerSummary();
       });
 
-      // 監聽各組事項
       db.ref('event_groups').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -358,13 +369,11 @@
         renderOwnerSummary();
       });
 
-      // 監聽歷史紀錄
       db.ref('history_events').on('value', (snapshot) => {
         historyEvents = snapshot.val() || {};
         renderHistoryList();
       });
 
-      // 監聽全場廣播
       db.ref('global_broadcast').limitToLast(1).on('child_added', (snapshot) => {
         if (!initialBroadcastIgnored) {
           initialBroadcastIgnored = true;
@@ -380,40 +389,33 @@
     function saveScheduleToCloud() { db.ref('event_schedule').set(schedule); }
     function saveGroupsToCloud() { db.ref('event_groups').set(groups); }
 
-    // 試算表連結控制
     function openSpreadsheet() {
       if (!spreadsheetUrl) {
-        if (confirm("目前尚未設定社團的 Google 試算表連結！\n是否現在立刻貼上連結？")) {
-          editSpreadsheetUrl();
-        }
+        if (confirm("尚未設定 Google 試算表連結！是否現在貼上？")) editSpreadsheetUrl();
         return;
       }
       window.open(spreadsheetUrl, '_blank');
     }
 
     function editSpreadsheetUrl() {
-      const newUrl = prompt("請輸入或貼上社團 Google 試算表（Google Sheets）的共用連結：", spreadsheetUrl);
+      const newUrl = prompt("請輸入或貼上社團 Google 試算表連結：", spreadsheetUrl);
       if (newUrl !== null) {
         spreadsheetUrl = newUrl.trim();
-        db.ref('spreadsheet_url').set(spreadsheetUrl, (err) => {
-          if (!err) alert("✅ 試算表連結已更新並同步給全體幹部！");
-        });
+        db.ref('spreadsheet_url').set(spreadsheetUrl);
       }
     }
 
-    // 歷史紀錄
     function toggleHistoryPanel() {
       document.getElementById('historyPanel').classList.toggle('collapsed');
     }
 
     function saveCurrentToHistory() {
-      const name = prompt("請輸入此活動的存檔名稱（例：2026/09 迎新茶會、第1次社課）：");
+      const name = prompt("請輸入存檔名稱（例：2026/09 迎新茶會）：");
       if (!name || !name.trim()) return;
 
-      const dateStr = new Date().toLocaleString('zh-TW', { hour12: false });
       const record = {
         name: name.trim(),
-        savedAt: dateStr,
+        savedAt: new Date().toLocaleString('zh-TW', { hour12: false }),
         spreadsheetUrl: spreadsheetUrl,
         schedule: schedule,
         groups: groups
@@ -427,19 +429,14 @@
     function renderHistoryList() {
       const container = document.getElementById('historyContainer');
       container.innerHTML = '';
-
       const keys = Object.keys(historyEvents);
       if (keys.length === 0) {
-        container.innerHTML = `<div style="color: #64748b; font-size: 13px; grid-column: 1/-1; padding: 10px 0;">尚無歷史紀錄。辦完活動後點擊「封存目前活動」即可建立範本。</div>`;
+        container.innerHTML = `<div style="color: #64748b; font-size: 11px; grid-column: 1/-1; padding: 6px 0;">尚無歷史紀錄。</div>`;
         return;
       }
 
       keys.reverse().forEach(key => {
         const item = historyEvents[key];
-        const scheduleCount = (item.schedule || []).length;
-        const groupCount = (item.groups || []).length;
-        const hasSheet = !!item.spreadsheetUrl;
-
         const card = document.createElement('div');
         card.className = 'history-card';
         card.innerHTML = `
@@ -447,14 +444,11 @@
             <div class="history-card-top">
               <span class="history-card-name">📌 ${escapeHtml(item.name)}</span>
             </div>
-            <div class="history-card-date">🕒 存檔時間：${escapeHtml(item.savedAt || '--')}</div>
-            <div class="history-card-desc" style="margin-top: 6px;">
-              包含 ${scheduleCount} 個階段、${groupCount} 個組別 ${hasSheet ? '・📊含試算表' : ''}
-            </div>
+            <div class="history-card-date">🕒 ${escapeHtml(item.savedAt || '--')}</div>
           </div>
           <div class="history-card-actions">
-            <button class="btn-slate" onclick="loadHistoryRecord('${key}')">📂 載入此活動</button>
-            <button class="btn-danger" onclick="deleteHistoryRecord('${key}')">刪除</button>
+            <button class="btn-slate" onclick="loadHistoryRecord('${key}')">📂 載入</button>
+            <button class="btn-ghost-danger" onclick="deleteHistoryRecord('${key}')">刪除</button>
           </div>
         `;
         container.appendChild(card);
@@ -463,10 +457,9 @@
 
     function loadHistoryRecord(key) {
       const item = historyEvents[key];
-      if (!item) return;
+      if (!item || !confirm(`確定要將目前畫面替換為「${item.name}」嗎？`)) return;
 
-      if (!confirm(`確定要將目前畫面替換為「${item.name}」嗎？`)) return;
-      const resetChecks = confirm(`是否要將所有事項的打勾狀態重設為「未完成」？\n按「確定」：乾淨重跑\n按「取消」：保留原打勾進度`);
+      const resetChecks = confirm(`是否將所有事項重設為未完成？\n「確定」：清空打勾\n「取消」：保留原進度`);
 
       let loadedSchedule = item.schedule || defaultSchedule;
       let loadedGroups = item.groups || [];
@@ -480,21 +473,17 @@
 
       db.ref('event_schedule').set(loadedSchedule);
       db.ref('event_groups').set(loadedGroups);
-      if (item.spreadsheetUrl) {
-        db.ref('spreadsheet_url').set(item.spreadsheetUrl);
-      }
-      alert(`✅ 已成功載入「${item.name}」！全場畫面已同步更新。`);
+      if (item.spreadsheetUrl) db.ref('spreadsheet_url').set(item.spreadsheetUrl);
+      alert(`✅ 已成功載入「${item.name}」！`);
     }
 
     function deleteHistoryRecord(key) {
       const item = historyEvents[key];
-      const name = item ? item.name : '此紀錄';
-      if (confirm(`確定要從歷史庫中永久刪除「${name}」嗎？`)) {
+      if (confirm(`確定刪除「${item ? item.name : '此紀錄'}」嗎？`)) {
         db.ref(`history_events/${key}`).remove();
       }
     }
 
-    // 篩選管理
     function updateFilterOptions() {
       const select = document.getElementById('userRoleFilter');
       const currentSelected = select.value;
@@ -525,16 +514,16 @@
       const hint = document.getElementById('filterHintText');
       if (currentFilterOwner === 'ALL') {
         hint.innerText = "已顯示全場完整項目";
-        hint.style.color = "#94a3b8";
+        hint.style.color = "#64748b";
       } else {
-        hint.innerText = `🔍 目前僅聚焦：${currentFilterOwner}`;
+        hint.innerText = `🔍 僅聚焦：${currentFilterOwner}`;
         hint.style.color = "#f472b6";
       }
       renderGroups();
       renderOwnerSummary();
     }
 
-    // 時鐘與倒數
+    // 時鐘與計時看板優化
     function updateClockAndTimer() {
       const now = new Date();
       document.getElementById('realtimeClock').innerText = `現在時間：${now.toLocaleTimeString('zh-TW', { hour12: false })}`;
@@ -542,9 +531,9 @@
       checkTaskOverdue(now);
 
       if (!schedule || schedule.length === 0) {
-        document.getElementById('currentStageBadge').innerText = "未設定流程";
+        document.getElementById('currentStageName').innerText = "未設定流程";
         document.getElementById('countdownTimer').innerText = "--:--";
-        document.getElementById('nextStageHint').innerText = "請在左側新增細流流程";
+        document.getElementById('nextStageHint').innerText = "請在左側新增流程";
         return;
       }
 
@@ -565,15 +554,17 @@
 
       if (!nextStage && sortedSchedule.length > 0) {
         currentStage = sortedSchedule[sortedSchedule.length - 1];
-        document.getElementById('currentStageBadge').innerText = `當前階段：${currentStage.name}`;
+        document.getElementById('stagePillTag').innerText = "🎉 最終階段";
+        document.getElementById('currentStageName').innerText = currentStage.name;
         document.getElementById('countdownTimer').innerText = "進行中";
-        document.getElementById('nextStageHint').innerText = "所有細流階段已展開";
+        document.getElementById('nextStageHint').innerText = "今日所有細流已全數開展";
         highlightActiveStage(currentStage.id);
         return;
       }
 
       highlightActiveStage(currentStage ? currentStage.id : null);
-      document.getElementById('currentStageBadge').innerText = `當前階段：${currentStage ? currentStage.name : '準備中'}`;
+      document.getElementById('stagePillTag').innerText = "⚡ 當前階段";
+      document.getElementById('currentStageName').innerText = currentStage ? currentStage.name : '準備中';
       
       const [nh, nm] = nextStage.time.split(':');
       const targetDate = new Date();
@@ -585,7 +576,7 @@
         const min = Math.floor(totalSec / 60);
         const sec = totalSec % 60;
         document.getElementById('countdownTimer').innerText = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
-        document.getElementById('nextStageHint').innerText = `下一階段：${nextStage.name} (${nextStage.time})${nextStage.mute ? ' 🤫靜音模式' : ''}`;
+        document.getElementById('nextStageHint').innerText = `下一階段：${nextStage.name} (${nextStage.time})${nextStage.mute ? ' 🤫' : ''}`;
 
         const milestoneKey = `${nextStage.name}_${min}`;
         if (min === 5 && sec === 0 && !announcedMilestones.has(milestoneKey)) {
@@ -611,6 +602,7 @@
       }
     }
 
+    // 逾期標籤判斷 (純邊框暗橘紅，不再狂閃滿版)
     function checkTaskOverdue(now) {
       const nowStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
       document.querySelectorAll('.time-tag[data-deadline]').forEach(el => {
@@ -618,7 +610,7 @@
         const isDone = el.getAttribute('data-done') === 'true';
         if (!isDone && deadline && nowStr > deadline) {
           el.classList.add('overdue');
-          el.title = "⚠️ 此任務時段已超過預計結束時間！";
+          el.title = "已過預計時段";
         } else {
           el.classList.remove('overdue');
           el.title = "點擊可修改時段";
@@ -644,7 +636,7 @@
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.12);
           gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.12);
-          gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + idx * 0.12 + 0.05);
+          gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + idx * 0.12 + 0.05);
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.12 + 1.2);
           osc.connect(gain);
           gain.connect(ctx.destination);
@@ -679,12 +671,11 @@
     }
 
     function triggerGlobalBroadcast() {
-      const msg = prompt("請輸入要對全體幹部手機廣播的內容：\n（若現場已有學員，請注意音量或斟酌使用）", "各位幹部辛苦囉，請大家注意目前的細流時間，加油喔！");
+      const msg = prompt("請輸入要對全體幹部廣播的內容：", "各位幹部辛苦囉，請大家注意目前的細流時間，加油喔！");
       if (!msg) return;
       db.ref('global_broadcast').push({ text: msg, timestamp: Date.now() });
     }
 
-    // 細流操作
     function renderSchedule() {
       const container = document.getElementById('scheduleContainer');
       container.innerHTML = '';
@@ -699,11 +690,11 @@
           <div class="schedule-info">
             <input type="time" value="${item.time}" onchange="updateStageTime(${item.id}, this.value)">
             <span class="schedule-name">${escapeHtml(item.name)}</span>
-            <button class="mute-toggle-btn ${isMuted ? 'muted' : ''}" onclick="toggleStageMute(${item.id})" title="點擊切換是否開啟語音廣播">
+            <button class="mute-toggle-btn ${isMuted ? 'muted' : ''}" onclick="toggleStageMute(${item.id})">
               ${isMuted ? '🤫 靜音' : '🔔 播報'}
             </button>
           </div>
-          <button class="btn-danger" onclick="deleteStage(${item.id})">刪除</button>
+          <button class="btn-ghost-danger" onclick="deleteStage(${item.id})">✕</button>
         `;
         container.appendChild(div);
       });
@@ -730,7 +721,7 @@
       if (!name) return;
       const time = prompt("請輸入開始時間（格式如 17:45）：", "18:00");
       if (!time) return;
-      const isMute = confirm("此階段是否要預設為「🤫 靜音模式」（不播語音，避免吵到學員）？");
+      const isMute = confirm("此階段是否預設為「靜音模式」（不播語音，避免打擾學員）？");
 
       schedule.push({ id: Date.now(), name: name, time: time, mute: isMute });
       saveScheduleToCloud();
@@ -738,11 +729,23 @@
 
     function deleteStage(id) {
       const target = schedule.find(s => s.id === id);
-      const name = target ? target.name : '此流程';
-      if (confirm(`確定要刪除「${name}」嗎？`)) {
+      if (confirm(`確定要刪除「${target ? target.name : '此流程'}」嗎？`)) {
         schedule = schedule.filter(s => s.id !== id);
         saveScheduleToCloud();
       }
+    }
+
+    // 全部展開 / 收合控制
+    function toggleAllGroupsCollapse() {
+      areAllCollapsed = !areAllCollapsed;
+      collapsedGroupIds.clear();
+      if (areAllCollapsed) {
+        groups.forEach(g => collapsedGroupIds.add(g.id));
+        document.getElementById('toggleAllCollapseBtn').innerText = "全部展開";
+      } else {
+        document.getElementById('toggleAllCollapseBtn').innerText = "全部收合";
+      }
+      renderGroups();
     }
 
     // 各組事項管理
@@ -751,7 +754,7 @@
       container.innerHTML = '';
 
       if (groups.length === 0) {
-        container.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px 0; font-size: 13px;">尚未新增組別，點擊右上角「+ 組別」開始建立！</div>`;
+        container.innerHTML = `<div style="text-align: center; color: #64748b; padding: 16px 0; font-size: 12px;">尚未新增組別，點擊右上角「+ 組別」開始建立！</div>`;
         return;
       }
 
@@ -762,13 +765,10 @@
         
         const visibleTasks = sortedTasks.filter(task => {
           if (currentFilterOwner === 'ALL') return true;
-          const owners = parseOwners(task.owner);
-          return owners.includes(currentFilterOwner);
+          return parseOwners(task.owner).includes(currentFilterOwner);
         });
 
-        if (currentFilterOwner !== 'ALL' && visibleTasks.length === 0) {
-          return;
-        }
+        if (currentFilterOwner !== 'ALL' && visibleTasks.length === 0) return;
 
         const total = allTasks.length;
         const doneCount = allTasks.filter(t => t.done).length;
@@ -781,12 +781,9 @@
         let tasksHtml = '';
         visibleTasks.forEach(task => {
           const owners = parseOwners(task.owner);
-          let ownersHtml = '';
-          if (owners.length > 0) {
-            ownersHtml = owners.map(o => `<span class="owner-tag" onclick="editTaskOwner(${group.id}, ${task.id})">👤 ${escapeHtml(o)}</span>`).join(' ');
-          } else {
-            ownersHtml = `<span class="owner-tag" onclick="editTaskOwner(${group.id}, ${task.id})">👤 指派</span>`;
-          }
+          let ownersHtml = owners.length > 0
+            ? owners.map(o => `<span class="owner-tag" onclick="editTaskOwner(${group.id}, ${task.id})">👤 ${escapeHtml(o)}</span>`).join(' ')
+            : `<span class="owner-tag" style="opacity:0.5;" onclick="editTaskOwner(${group.id}, ${task.id})">+指派</span>`;
 
           const timeLabel = formatTimeLabel(task);
           const deadlineTime = task.endTime || task.startTime || task.time || '';
@@ -794,7 +791,7 @@
           tasksHtml += `
             <div class="task-item ${task.done ? 'done' : ''}">
               <div class="task-left">
-                <input type="checkbox" ${task.done ? 'checked' : ''} style="cursor:pointer;" onchange="toggleTask(${group.id}, ${task.id})">
+                <input type="checkbox" ${task.done ? 'checked' : ''} style="cursor:pointer; width:15px; height:15px;" onchange="toggleTask(${group.id}, ${task.id})">
                 
                 ${timeLabel ? `
                   <span class="time-tag" data-deadline="${deadlineTime}" data-done="${task.done}" onclick="editTaskTimeRange(${group.id}, ${task.id})">
@@ -809,7 +806,7 @@
                 <span class="task-text" onclick="toggleTask(${group.id}, ${task.id})">${escapeHtml(task.text)}</span>
                 ${ownersHtml}
               </div>
-              <button class="btn-danger" onclick="deleteTask(${group.id}, ${task.id})">✕</button>
+              <button class="btn-ghost-danger" onclick="deleteTask(${group.id}, ${task.id})">✕</button>
             </div>
           `;
         });
@@ -821,7 +818,7 @@
               <span>📌 ${escapeHtml(group.name)}</span>
             </div>
             <div onclick="event.stopPropagation();">
-              <button class="btn-danger" onclick="deleteGroup(${group.id})">刪除</button>
+              <button class="btn-ghost-danger" onclick="deleteGroup(${group.id})" style="font-size:11px;">刪除組別</button>
             </div>
           </div>
 
@@ -836,14 +833,14 @@
           </div>
 
           <div class="group-body">
-            <div class="task-list">${tasksHtml || '<div style="color:#64748b; font-size:12px; padding:2px 0;">此組無相關事項</div>'}</div>
+            <div class="task-list">${tasksHtml || '<div style="color:#64748b; font-size:11px; padding:2px 0;">此組無相關事項</div>'}</div>
             <div class="add-box">
               <input type="text" id="input-task-${group.id}" class="input-task-text" placeholder="待辦事項...">
-              <input type="text" id="input-owner-${group.id}" class="input-task-owner" placeholder="負責人(可多人)">
+              <input type="text" id="input-owner-${group.id}" class="input-task-owner" placeholder="負責人">
               <div class="time-range-group">
-                <input type="time" id="input-stime-${group.id}" title="開始時間">
+                <input type="time" id="input-stime-${group.id}">
                 <span>~</span>
-                <input type="time" id="input-etime-${group.id}" title="結束時間(選填)">
+                <input type="time" id="input-etime-${group.id}">
               </div>
               <button class="btn-slate" onclick="addTask(${group.id})">新增</button>
             </div>
@@ -870,9 +867,7 @@
           return (tStart < segEnd && tEnd > segStart) || (tStart >= segStart && tStart < segEnd);
         });
 
-        if (!hasTask) {
-          idleGaps.push(`${segStart}~${segEnd} (${stageA.name}時段)`);
-        }
+        if (!hasTask) idleGaps.push(`${segStart}~${segEnd} (${stageA.name})`);
       }
       return idleGaps;
     }
@@ -881,7 +876,6 @@
     function renderOwnerSummary() {
       const container = document.getElementById('ownerContainer');
       container.innerHTML = '';
-
       const ownerMap = {};
 
       groups.forEach(group => {
@@ -890,13 +884,9 @@
           const taskKeys = owners.length > 0 ? owners : ['（未指派負責人）'];
 
           taskKeys.forEach(ownerKey => {
-            if (currentFilterOwner !== 'ALL' && ownerKey !== currentFilterOwner) {
-              return;
-            }
+            if (currentFilterOwner !== 'ALL' && ownerKey !== currentFilterOwner) return;
 
-            if (!ownerMap[ownerKey]) {
-              ownerMap[ownerKey] = [];
-            }
+            if (!ownerMap[ownerKey]) ownerMap[ownerKey] = [];
             ownerMap[ownerKey].push({
               ...task,
               allOwners: owners,
@@ -909,7 +899,7 @@
 
       const ownerNames = Object.keys(ownerMap);
       if (ownerNames.length === 0) {
-        container.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px 0; font-size: 13px;">目前無符合的事項。</div>`;
+        container.innerHTML = `<div style="text-align: center; color: #64748b; padding: 16px 0; font-size: 12px;">目前無符合的事項。</div>`;
         return;
       }
 
@@ -947,14 +937,14 @@
         let taskItemsHtml = '';
         tasks.forEach(t => {
           const partnerNames = t.allOwners.filter(o => o !== owner);
-          const partnerHint = partnerNames.length > 0 ? `<span style="font-size:10px; color:#94a3b8;">(與 ${escapeHtml(partnerNames.join(','))} 合作)</span>` : '';
+          const partnerHint = partnerNames.length > 0 ? `<span style="font-size:10px; color:#64748b;">(${escapeHtml(partnerNames.join(','))})</span>` : '';
           const timeLabel = formatTimeLabel(t);
           const deadlineTime = t.endTime || t.startTime || t.time || '';
 
           taskItemsHtml += `
             <div class="task-item ${t.done ? 'done' : ''}">
               <div class="task-left">
-                <input type="checkbox" ${t.done ? 'checked' : ''} style="cursor:pointer;" onchange="toggleTask(${t.groupId}, ${t.id})">
+                <input type="checkbox" ${t.done ? 'checked' : ''} style="cursor:pointer; width:15px; height:15px;" onchange="toggleTask(${t.groupId}, ${t.id})">
                 <span class="owner-task-badge">${escapeHtml(t.groupName)}</span>
                 ${timeLabel ? `<span class="time-tag" data-deadline="${deadlineTime}" data-done="${t.done}">⏰ ${timeLabel}</span>` : ''}
                 <span class="task-text" onclick="toggleTask(${t.groupId}, ${t.id})">${escapeHtml(t.text)}</span>
@@ -970,12 +960,12 @@
               <span>👤 ${escapeHtml(owner)}</span>
             </div>
             <span style="font-size: 11px; color: ${percent === 100 ? '#4ade80' : '#94a3b8'}; font-weight: 600;">
-              ${doneCount} / ${total} (${percent}%)
+              ${doneCount}/${total} (${percent}%)
             </span>
           </div>
 
-          <div class="progress-bar-bg" style="margin-bottom: 8px;">
-            <div class="progress-bar-fill" style="width: ${percent}%; background: linear-gradient(90deg, #a78bfa, #f472b6);"></div>
+          <div class="progress-bar-bg" style="margin-bottom: 7px;">
+            <div class="progress-bar-fill" style="width: ${percent}%; background: linear-gradient(90deg, #c084fc, #f472b6);"></div>
           </div>
 
           <div class="task-list" style="margin-bottom: 0;">
@@ -1005,8 +995,7 @@
 
     function deleteGroup(groupId) {
       const target = groups.find(g => g.id === groupId);
-      const name = target ? target.name : '此組別';
-      if (confirm(`確定要刪除整個「${name}」及其所有事項嗎？`)) {
+      if (confirm(`確定要刪除「${target ? target.name : '此組別'}」及其所有事項嗎？`)) {
         groups = groups.filter(g => g.id !== groupId);
         saveGroupsToCloud();
       }
@@ -1090,8 +1079,7 @@
       const group = groups.find(g => g.id === groupId);
       if (group && group.tasks) {
         const task = group.tasks.find(t => t.id === taskId);
-        const name = task ? task.text : '此事項';
-        if (confirm(`確定要刪除事項「${name}」嗎？`)) {
+        if (confirm(`確定要刪除事項「${task ? task.text : '此事項'}」嗎？`)) {
           group.tasks = group.tasks.filter(t => t.id !== taskId);
           saveGroupsToCloud();
         }
@@ -1099,11 +1087,9 @@
     }
 
     function resetAllTaskChecks() {
-      if (confirm("確定要將「所有組別」的打勾狀態全部清空重設嗎？\n（組別和待辦事項都會完整保留，僅重設完成進度）")) {
+      if (confirm("確定要將「所有組別」的打勾狀態全部清空重設嗎？\n（組別和事項完整保留，僅重設進度）")) {
         groups.forEach(group => {
-          if (group.tasks) {
-            group.tasks.forEach(t => t.done = false);
-          }
+          if (group.tasks) group.tasks.forEach(t => t.done = false);
         });
         saveGroupsToCloud();
       }
