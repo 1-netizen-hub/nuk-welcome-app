@@ -18,7 +18,7 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
-    body { background-color: #0d0e12; color: #f1f5f9; min-height: 100vh; padding: 16px; display: flex; flex-direction: column; align-items: center; }
+    body { background-color: #0d0e12; color: #f1f5f9; min-height: 100vh; padding: 16px; display: flex; flex-direction: column; align-items: center; transition: padding 0.3s; }
     
     .container { width: 100%; max-width: 1320px; }
 
@@ -27,7 +27,7 @@
     .title-area h1 { font-size: 19px; color: #f472b6; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .sync-status { font-size: 11px; background: rgba(34, 197, 94, 0.12); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.25); padding: 2px 8px; border-radius: 999px; font-weight: 500; }
     .clock-display { font-size: 13px; color: #94a3b8; margin-top: 3px; font-family: monospace; }
-    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
     button { cursor: pointer; border: none; padding: 6px 12px; border-radius: 7px; font-weight: 600; font-size: 12px; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; }
     button:active { transform: scale(0.97); }
@@ -43,6 +43,8 @@
     .btn-success:hover { background: rgba(34, 197, 94, 0.25); }
     .btn-sheet { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
     .btn-sheet:hover { background: rgba(16, 185, 129, 0.25); }
+    .btn-projector { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; box-shadow: 0 0 10px rgba(99, 102, 241, 0.3); }
+    .btn-projector:hover { opacity: 0.9; }
     .btn-ghost-danger { background: transparent; color: #64748b; border: 1px solid transparent; padding: 3px 6px; font-size: 12px; border-radius: 4px; }
     .btn-ghost-danger:hover { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
 
@@ -51,7 +53,7 @@
     .filter-title { font-size: 13px; font-weight: 600; color: #f472b6; display: flex; align-items: center; gap: 6px; }
     .filter-select { background: #0d0e12; border: 1px solid #4f46e5; color: #f1f5f9; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; outline: none; cursor: pointer; }
 
-    /* 主倒數計時看板 (緊湊高質感) */
+    /* 主倒數計時看板 */
     .hero-banner { 
       background: linear-gradient(135deg, #181528 0%, #111c38 100%); 
       border: 1px solid #2d1f47; 
@@ -109,19 +111,42 @@
     .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #38bdf8, #4ade80); width: 0%; transition: width 0.3s ease; }
 
     .task-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
-    .task-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #e2e8f0; background: #13141a; padding: 6px 9px; border-radius: 6px; gap: 6px; border: 1px solid transparent; }
+    .task-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #e2e8f0; background: #13141a; padding: 6px 9px; border-radius: 6px; gap: 6px; border: 1px solid transparent; transition: all 0.3s ease; }
     .task-item:hover { border-color: #272a38; }
     .task-item.done span.task-text { text-decoration: line-through; color: #475569; }
     .task-left { display: flex; align-items: center; gap: 7px; cursor: pointer; flex-grow: 1; flex-wrap: wrap; }
     
-    /* 負責人 Tag (高對比微紫標籤) */
+    /* 負責人 Tag */
     .owner-tag { font-size: 11px; background: rgba(167, 139, 250, 0.12); color: #c4b5fd; padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(167, 139, 250, 0.25); white-space: nowrap; cursor: pointer; }
     .owner-tag:hover { background: rgba(167, 139, 250, 0.25); }
 
-    /* 時段標籤 (低調微光，逾期不再刺眼) */
+    /* 時段標籤 */
     .time-tag { font-size: 11px; background: rgba(56, 189, 248, 0.08); color: #7dd3fc; padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2); white-space: nowrap; cursor: pointer; font-family: monospace; }
     .time-tag:hover { background: rgba(56, 189, 248, 0.18); }
     .time-tag.overdue { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.35); font-weight: 600; }
+
+    /* ⚡ 當前執勤高亮（呼吸光暈焦點） */
+    .task-item.current-duty {
+      background: rgba(14, 165, 233, 0.12) !important;
+      border: 1px solid #38bdf8 !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+      animation: dutyPulse 2s infinite ease-in-out;
+    }
+    .duty-badge {
+      font-size: 10px;
+      background: #0284c7;
+      color: #ffffff;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    @keyframes dutyPulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(56, 189, 248, 0.25); }
+      50% { box-shadow: 0 0 18px rgba(56, 189, 248, 0.55); border-color: #7dd3fc; }
+    }
 
     .add-box { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
     .add-box input[type="text"], .add-box input[type="time"] { background: #0d0e12; border: 1px solid #2c303f; color: white; border-radius: 5px; padding: 4px 7px; font-size: 12px; }
@@ -136,7 +161,7 @@
     .owner-card-title { font-size: 13px; font-weight: 700; color: #c084fc; display: flex; align-items: center; gap: 5px; }
     .owner-task-badge { font-size: 10px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 1px 4px; border-radius: 3px; }
 
-    /* 空窗提醒框 (柔和琥珀橘) */
+    /* 空窗提醒框 */
     .idle-alert-box { background: rgba(245, 158, 11, 0.08); border: 1px dashed rgba(245, 158, 11, 0.3); border-radius: 5px; padding: 5px 8px; font-size: 11px; color: #fcd34d; margin-top: 6px; }
 
     /* 歷史專區摺疊面板 */
@@ -156,6 +181,39 @@
     .history-card-desc { font-size: 11px; color: #94a3b8; }
     .history-card-actions { display: flex; gap: 5px; justify-content: flex-end; margin-top: 4px; }
 
+    /* 🖥️ 投影簡報模式 (Projector Mode) */
+    body.projector-mode {
+      padding: 24px 32px;
+      background: #090a0f;
+    }
+    body.projector-mode .container {
+      max-width: 100%;
+    }
+    body.projector-mode .add-box,
+    body.projector-mode .btn-ghost-danger,
+    body.projector-mode .filter-bar,
+    body.projector-mode .history-panel,
+    body.projector-mode .header-actions button:not(#projectorToggleBtn),
+    body.projector-mode .panel-header button {
+      display: none !important;
+    }
+    body.projector-mode .hero-banner {
+      padding: 22px 30px;
+      margin-bottom: 24px;
+      border: 1px solid #3b2a5a;
+    }
+    body.projector-mode .hero-stage-name {
+      font-size: 34px;
+    }
+    body.projector-mode .big-timer {
+      font-size: 64px;
+    }
+    body.projector-mode .schedule-list,
+    body.projector-mode .groups-container,
+    body.projector-mode .owner-container {
+      max-height: 65vh;
+    }
+
     footer { margin-top: 8px; font-size: 11px; text-align: center; color: #475569; }
   </style>
 </head>
@@ -168,6 +226,7 @@
         <div class="clock-display" id="realtimeClock">現在時間：--:--:--</div>
       </div>
       <div class="header-actions">
+        <button class="btn-projector" id="projectorToggleBtn" onclick="toggleProjectorMode()">🖥️ 投影模式</button>
         <button class="btn-sheet" id="openSheetBtn" onclick="openSpreadsheet()" title="開啟 Google 試算表">📊 試算表細流</button>
         <button class="btn-success" onclick="saveCurrentToHistory()">💾 封存歷史</button>
         <button class="btn-subtle" onclick="testGentleVoice()">🌸 語音測試</button>
@@ -186,7 +245,7 @@
       <span style="font-size: 11px; color: #64748b;" id="filterHintText">已顯示全場完整項目</span>
     </div>
 
-    <!-- 主倒數計時看板 (精緻緊湊化) -->
+    <!-- 主倒數計時看板 -->
     <div class="hero-banner">
       <div class="hero-left">
         <span class="stage-pill" id="stagePillTag">⚡ 當前階段</span>
@@ -253,7 +312,7 @@
       </div>
     </div>
 
-    <footer>高大社團・溫柔控場場佈系統 v12.0 (視覺清爽升級版)</footer>
+    <footer>高大社團・溫柔控場場佈系統 v13.0 (含投影戰情模式與當前執勤高亮)</footer>
   </div>
 
   <script>
@@ -292,6 +351,7 @@
     let spreadsheetUrl = '';
     let collapsedGroupIds = new Set();
     let areAllCollapsed = false;
+    let isProjectorMode = false;
     let currentFilterOwner = 'ALL';
     let announcedMilestones = new Set();
     let initialBroadcastIgnored = false;
@@ -323,6 +383,13 @@
 
     window.onload = function() {
       setInterval(updateClockAndTimer, 1000);
+
+      // 監聽鍵盤 Esc 退出投影模式
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isProjectorMode) {
+          toggleProjectorMode();
+        }
+      });
 
       db.ref('.info/connected').on('value', (snap) => {
         const el = document.getElementById('syncStatus');
@@ -388,6 +455,28 @@
 
     function saveScheduleToCloud() { db.ref('event_schedule').set(schedule); }
     function saveGroupsToCloud() { db.ref('event_groups').set(groups); }
+
+    // 🖥️ 投影模式切換函式
+    function toggleProjectorMode() {
+      isProjectorMode = !isProjectorMode;
+      document.body.classList.toggle('projector-mode', isProjectorMode);
+      const btn = document.getElementById('projectorToggleBtn');
+      
+      if (isProjectorMode) {
+        btn.innerText = "❌ 退出投影 (Esc)";
+        btn.classList.replace('btn-projector', 'btn-pink');
+        // 嘗試自動進入瀏覽器全螢幕
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      } else {
+        btn.innerText = "🖥️ 投影模式";
+        btn.classList.replace('btn-pink', 'btn-projector');
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+    }
 
     function openSpreadsheet() {
       if (!spreadsheetUrl) {
@@ -523,12 +612,14 @@
       renderOwnerSummary();
     }
 
-    // 時鐘與計時看板優化
+    // 時鐘、倒數、逾期與「⚡ 當前執勤高亮」判斷
     function updateClockAndTimer() {
       const now = new Date();
+      const currentTimeStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
       document.getElementById('realtimeClock').innerText = `現在時間：${now.toLocaleTimeString('zh-TW', { hour12: false })}`;
 
-      checkTaskOverdue(now);
+      // 核對逾期與當前執勤任務
+      checkDutyAndOverdueStatus(currentTimeStr);
 
       if (!schedule || schedule.length === 0) {
         document.getElementById('currentStageName').innerText = "未設定流程";
@@ -538,7 +629,6 @@
       }
 
       const sortedSchedule = [...schedule].sort((a, b) => a.time.localeCompare(b.time));
-      const currentTimeStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
       
       let currentStage = null;
       let nextStage = null;
@@ -602,18 +692,33 @@
       }
     }
 
-    // 逾期標籤判斷 (純邊框暗橘紅，不再狂閃滿版)
-    function checkTaskOverdue(now) {
-      const nowStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
-      document.querySelectorAll('.time-tag[data-deadline]').forEach(el => {
-        const deadline = el.getAttribute('data-deadline');
-        const isDone = el.getAttribute('data-done') === 'true';
-        if (!isDone && deadline && nowStr > deadline) {
-          el.classList.add('overdue');
-          el.title = "已過預計時段";
+    // ⚡ 檢查當前執勤高亮 & 逾期狀態
+    function checkDutyAndOverdueStatus(nowStr) {
+      document.querySelectorAll('.task-item[data-task-start]').forEach(itemEl => {
+        const isDone = itemEl.getAttribute('data-task-done') === 'true';
+        const start = itemEl.getAttribute('data-task-start');
+        const end = itemEl.getAttribute('data-task-end') || start;
+        const timeTag = itemEl.querySelector('.time-tag');
+
+        if (isDone || !start) {
+          itemEl.classList.remove('current-duty');
+          if (timeTag) timeTag.classList.remove('overdue');
+          return;
+        }
+
+        // 1. 判斷是否正處於「當前時段」執勤中 (start <= now <= end)
+        const isCurrentDuty = (start <= nowStr && nowStr <= end);
+        if (isCurrentDuty) {
+          itemEl.classList.add('current-duty');
         } else {
-          el.classList.remove('overdue');
-          el.title = "點擊可修改時段";
+          itemEl.classList.remove('current-duty');
+        }
+
+        // 2. 判斷逾期 (超過 end 且未完成)
+        if (nowStr > end) {
+          if (timeTag) timeTag.classList.add('overdue');
+        } else {
+          if (timeTag) timeTag.classList.remove('overdue');
         }
       });
     }
@@ -735,7 +840,6 @@
       }
     }
 
-    // 全部展開 / 收合控制
     function toggleAllGroupsCollapse() {
       areAllCollapsed = !areAllCollapsed;
       collapsedGroupIds.clear();
@@ -786,15 +890,19 @@
             : `<span class="owner-tag" style="opacity:0.5;" onclick="editTaskOwner(${group.id}, ${task.id})">+指派</span>`;
 
           const timeLabel = formatTimeLabel(task);
-          const deadlineTime = task.endTime || task.startTime || task.time || '';
+          const sTime = task.startTime || task.time || '';
+          const eTime = task.endTime || sTime;
 
           tasksHtml += `
-            <div class="task-item ${task.done ? 'done' : ''}">
+            <div class="task-item ${task.done ? 'done' : ''}" 
+                 data-task-start="${sTime}" 
+                 data-task-end="${eTime}" 
+                 data-task-done="${task.done}">
               <div class="task-left">
                 <input type="checkbox" ${task.done ? 'checked' : ''} style="cursor:pointer; width:15px; height:15px;" onchange="toggleTask(${group.id}, ${task.id})">
                 
                 ${timeLabel ? `
-                  <span class="time-tag" data-deadline="${deadlineTime}" data-done="${task.done}" onclick="editTaskTimeRange(${group.id}, ${task.id})">
+                  <span class="time-tag" onclick="editTaskTimeRange(${group.id}, ${task.id})">
                     ⏰ ${timeLabel}
                   </span>
                 ` : `
@@ -939,14 +1047,18 @@
           const partnerNames = t.allOwners.filter(o => o !== owner);
           const partnerHint = partnerNames.length > 0 ? `<span style="font-size:10px; color:#64748b;">(${escapeHtml(partnerNames.join(','))})</span>` : '';
           const timeLabel = formatTimeLabel(t);
-          const deadlineTime = t.endTime || t.startTime || t.time || '';
+          const sTime = t.startTime || t.time || '';
+          const eTime = t.endTime || sTime;
 
           taskItemsHtml += `
-            <div class="task-item ${t.done ? 'done' : ''}">
+            <div class="task-item ${t.done ? 'done' : ''}"
+                 data-task-start="${sTime}" 
+                 data-task-end="${eTime}" 
+                 data-task-done="${t.done}">
               <div class="task-left">
                 <input type="checkbox" ${t.done ? 'checked' : ''} style="cursor:pointer; width:15px; height:15px;" onchange="toggleTask(${t.groupId}, ${t.id})">
                 <span class="owner-task-badge">${escapeHtml(t.groupName)}</span>
-                ${timeLabel ? `<span class="time-tag" data-deadline="${deadlineTime}" data-done="${t.done}">⏰ ${timeLabel}</span>` : ''}
+                ${timeLabel ? `<span class="time-tag">⏰ ${timeLabel}</span>` : ''}
                 <span class="task-text" onclick="toggleTask(${t.groupId}, ${t.id})">${escapeHtml(t.text)}</span>
                 ${partnerHint}
               </div>
