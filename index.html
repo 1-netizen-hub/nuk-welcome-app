@@ -18,18 +18,18 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
-    body { background-color: #121318; color: #f1f5f9; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+    body { background-color: #121318; color: #f1f5f9; min-height: 100vh; padding: 16px; display: flex; flex-direction: column; align-items: center; }
     
     .container { width: 100%; max-width: 1250px; }
 
     /* Header */
-    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #2e3440; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-    .title-area h1 { font-size: 22px; color: #f472b6; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .sync-status { font-size: 12px; background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); padding: 2px 8px; border-radius: 999px; font-weight: 500; }
-    .clock-display { font-size: 14px; color: #94a3b8; margin-top: 4px; font-family: monospace; }
-    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #2e3440; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .title-area h1 { font-size: 20px; color: #f472b6; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .sync-status { font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); padding: 2px 8px; border-radius: 999px; font-weight: 500; }
+    .clock-display { font-size: 13px; color: #94a3b8; margin-top: 4px; font-family: monospace; }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    button { cursor: pointer; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; }
+    button { cursor: pointer; border: none; padding: 7px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; }
     button:active { transform: scale(0.97); }
     .btn-pink { background: #db2777; color: white; }
     .btn-pink:hover { background: #be185d; }
@@ -39,30 +39,35 @@
     .btn-subtle:hover { background: rgba(244, 114, 182, 0.25); }
     .btn-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
     .btn-warning:hover { background: rgba(245, 158, 11, 0.3); }
-    .btn-danger { background: #991b1b; color: #fecaca; padding: 4px 8px; font-size: 12px; }
+    .btn-danger { background: #991b1b; color: #fecaca; padding: 3px 6px; font-size: 11px; }
 
-    /* Main Banner Countdown */
-    .hero-banner { background: linear-gradient(135deg, #1e1b2e 0%, #172554 100%); border: 1px solid #3b0764; border-radius: 16px; padding: 28px 20px; text-align: center; margin-bottom: 28px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); }
-    .stage-badge { display: inline-block; background: rgba(244, 114, 182, 0.2); color: #f472b6; padding: 4px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; margin-bottom: 8px; border: 1px solid rgba(244, 114, 182, 0.3); }
-    .big-timer { font-size: clamp(60px, 12vw, 96px); font-weight: 800; font-family: monospace; color: #fb7185; letter-spacing: -2px; line-height: 1; margin: 10px 0; text-shadow: 0 0 20px rgba(251, 113, 133, 0.3); }
-    .next-stage-hint { color: #cbd5e1; font-size: 15px; margin-top: 6px; }
+    /* 身分篩選專區 (手機救星) */
+    .filter-bar { background: #1e1b2e; border: 1px solid #3b0764; border-radius: 12px; padding: 10px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .filter-title { font-size: 14px; font-weight: 600; color: #f472b6; display: flex; align-items: center; gap: 6px; }
+    .filter-select { background: #121318; border: 1px solid #6366f1; color: #f1f5f9; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; outline: none; cursor: pointer; }
+
+    /* 主倒數計時大畫幅 */
+    .hero-banner { background: linear-gradient(135deg, #1e1b2e 0%, #172554 100%); border: 1px solid #3b0764; border-radius: 16px; padding: 24px 16px; text-align: center; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); }
+    .stage-badge { display: inline-block; background: rgba(244, 114, 182, 0.2); color: #f472b6; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 8px; border: 1px solid rgba(244, 114, 182, 0.3); }
+    .big-timer { font-size: clamp(52px, 10vw, 84px); font-weight: 800; font-family: monospace; color: #fb7185; letter-spacing: -2px; line-height: 1; margin: 8px 0; text-shadow: 0 0 20px rgba(251, 113, 133, 0.3); }
+    .next-stage-hint { color: #cbd5e1; font-size: 14px; margin-top: 4px; }
 
     /* 三欄排版架構 */
-    .main-grid { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 20px; }
+    .main-grid { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 18px; }
     @media (max-width: 1050px) { .main-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } }
 
-    .panel { background: #18181b; border: 1px solid #27272a; border-radius: 14px; padding: 18px; }
-    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #27272a; padding-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+    .panel { background: #18181b; border: 1px solid #27272a; border-radius: 14px; padding: 16px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid #27272a; padding-bottom: 10px; flex-wrap: wrap; gap: 8px; }
     .panel-title { font-size: 15px; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
 
     /* Schedule Section */
     .schedule-list { display: flex; flex-direction: column; gap: 10px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
-    .schedule-item { display: flex; align-items: center; justify-content: space-between; background: #27272a; padding: 10px 14px; border-radius: 10px; border-left: 4px solid #64748b; }
+    .schedule-item { display: flex; align-items: center; justify-content: space-between; background: #27272a; padding: 10px 12px; border-radius: 10px; border-left: 4px solid #64748b; }
     .schedule-item.active { border-left-color: #f472b6; background: #2d1d29; }
-    .schedule-info { display: flex; align-items: center; gap: 10px; flex-grow: 1; }
+    .schedule-info { display: flex; align-items: center; gap: 8px; flex-grow: 1; }
     .schedule-name { font-weight: 600; font-size: 14px; }
-    input[type="time"] { background: #18181b; color: #f8fafc; border: 1px solid #3f3f46; border-radius: 6px; padding: 4px 8px; font-size: 13px; }
+    input[type="time"] { background: #18181b; color: #f8fafc; border: 1px solid #3f3f46; border-radius: 6px; padding: 3px 6px; font-size: 12px; }
 
     /* Groups Section */
     .groups-container { display: flex; flex-direction: column; gap: 14px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
@@ -75,23 +80,35 @@
     .group-card.collapsed .group-body { display: none; }
 
     /* 進度條 */
-    .progress-wrap { margin-top: 8px; margin-bottom: 12px; }
+    .progress-wrap { margin-top: 8px; margin-bottom: 10px; }
     .progress-meta { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
     .progress-bar-bg { width: 100%; height: 5px; background: #18181b; border-radius: 999px; overflow: hidden; }
     .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #38bdf8, #4ade80); width: 0%; transition: width 0.3s ease; }
 
     .task-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-    .task-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #e2e8f0; background: #18181b; padding: 7px 10px; border-radius: 6px; }
+    .task-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #e2e8f0; background: #18181b; padding: 7px 10px; border-radius: 6px; gap: 8px; }
     .task-item.done span.task-text { text-decoration: line-through; color: #64748b; }
-    .task-left { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-grow: 1; }
+    .task-left { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-grow: 1; flex-wrap: wrap; }
     
-    /* 負責人 Tag */
-    .owner-tag { font-size: 11px; background: rgba(148, 163, 184, 0.15); color: #cbd5e1; padding: 1px 7px; border-radius: 4px; border: 1px solid rgba(148, 163, 184, 0.25); white-space: nowrap; }
+    /* 負責人 Tag（可點擊修改） */
+    .owner-tag { font-size: 11px; background: rgba(148, 163, 184, 0.15); color: #cbd5e1; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(148, 163, 184, 0.25); white-space: nowrap; cursor: pointer; transition: background 0.2s; }
+    .owner-tag:hover { background: rgba(148, 163, 184, 0.3); border-color: #38bdf8; }
 
-    .add-box { display: flex; gap: 6px; margin-top: 8px; }
-    .add-box input[type="text"] { background: #18181b; border: 1px solid #3f3f46; color: white; border-radius: 6px; padding: 6px 10px; font-size: 13px; }
-    .input-task-text { flex-grow: 1; }
-    .input-task-owner { width: 85px; }
+    /* 執行時間 Tag（含逾期亮紅燈警示） */
+    .time-tag { font-size: 11px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.25); white-space: nowrap; cursor: pointer; font-family: monospace; }
+    .time-tag:hover { background: rgba(56, 189, 248, 0.25); }
+    .time-tag.overdue { background: rgba(239, 68, 68, 0.25); color: #f87171; border-color: #ef4444; font-weight: bold; animation: pulse 1.5s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .add-box { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .add-box input[type="text"], .add-box input[type="time"] { background: #18181b; border: 1px solid #3f3f46; color: white; border-radius: 6px; padding: 5px 8px; font-size: 12px; }
+    .input-task-text { flex-grow: 1; min-width: 140px; }
+    .input-task-owner { width: 75px; }
+    .input-task-time { width: 85px; }
 
     /* 負責人彙整卡片樣式 */
     .owner-container { display: flex; flex-direction: column; gap: 12px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
@@ -117,6 +134,18 @@
       </div>
     </header>
 
+    <!-- 身分專屬篩選列（手機端超實用） -->
+    <div class="filter-bar">
+      <div class="filter-title">
+        <span>👤 我是幹部：</span>
+        <select class="filter-select" id="userRoleFilter" onchange="onFilterChange()">
+          <option value="ALL">👀 全部人員（顯示所有人工作）</option>
+          <!-- 動態自動產生所有負責人名字 -->
+        </select>
+      </div>
+      <span style="font-size: 12px; color: #94a3b8;" id="filterHintText">已顯示全場完整項目</span>
+    </div>
+
     <!-- 主倒數計時大畫幅 -->
     <div class="hero-banner">
       <div class="stage-badge" id="currentStageBadge">階段：載入中</div>
@@ -131,7 +160,7 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">⏱️ 細流流程控制</div>
-          <button class="btn-slate" onclick="addNewStage()">+ 新增流程</button>
+          <button class="btn-slate" onclick="addNewStage()">+ 流程</button>
         </div>
         <div class="schedule-list" id="scheduleContainer"></div>
       </div>
@@ -148,18 +177,18 @@
         <div class="groups-container" id="groupsContainer"></div>
       </div>
 
-      <!-- 欄位 3：依負責人彙整清單（自動生成） -->
+      <!-- 欄位 3：依負責人彙整清單 -->
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">👤 個人專屬工作彙整</div>
-          <span style="font-size: 11px; color: #94a3b8;">自動彙整所有組別事項</span>
+          <span style="font-size: 11px; color: #94a3b8;">自動分類統整</span>
         </div>
         <div class="owner-container" id="ownerContainer"></div>
       </div>
 
     </div>
 
-    <footer>高大社團・溫柔控場場佈系統 v5.0 (含負責人專屬彙整面板)</footer>
+    <footer>高大社團・溫柔控場場佈系統 v6.0 (支援執行時間、逾期警示、點擊更換負責人與身分篩選)</footer>
   </div>
 
   <script>
@@ -197,6 +226,7 @@
     let schedule = [];
     let groups = [];
     let collapsedGroupIds = new Set();
+    let currentFilterOwner = 'ALL'; // 當前身分篩選器
     let announcedMilestones = new Set();
     let initialBroadcastIgnored = false;
 
@@ -226,7 +256,7 @@
         renderSchedule();
       });
 
-      // 監聽組別事項
+      // 監聽各組事項
       db.ref('event_groups').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -238,8 +268,9 @@
         } else {
           groups = [];
         }
+        updateFilterOptions();
         renderGroups();
-        renderOwnerSummary(); // 同步更新負責人看板
+        renderOwnerSummary();
       });
 
       // 監聽全場廣播
@@ -258,10 +289,55 @@
     function saveScheduleToCloud() { db.ref('event_schedule').set(schedule); }
     function saveGroupsToCloud() { db.ref('event_groups').set(groups); }
 
-    // 時鐘與倒數
+    // 更新身分篩選器下拉選項
+    function updateFilterOptions() {
+      const select = document.getElementById('userRoleFilter');
+      const currentSelected = select.value;
+      const owners = new Set();
+
+      groups.forEach(g => {
+        (g.tasks || []).forEach(t => {
+          if (t.owner && t.owner.trim()) {
+            owners.add(t.owner.trim());
+          }
+        });
+      });
+
+      let optionsHtml = `<option value="ALL">👀 全部人員（顯示所有人工作）</option>`;
+      Array.from(owners).sort((a,b) => a.localeCompare(b, 'zh-TW')).forEach(name => {
+        optionsHtml += `<option value="${escapeHtml(name)}">👤 僅看：${escapeHtml(name)} 的工作</option>`;
+      });
+
+      select.innerHTML = optionsHtml;
+      if (Array.from(select.options).some(opt => opt.value === currentSelected)) {
+        select.value = currentSelected;
+      } else {
+        select.value = 'ALL';
+      }
+      currentFilterOwner = select.value;
+    }
+
+    function onFilterChange() {
+      currentFilterOwner = document.getElementById('userRoleFilter').value;
+      const hint = document.getElementById('filterHintText');
+      if (currentFilterOwner === 'ALL') {
+        hint.innerText = "已顯示全場完整項目";
+        hint.style.color = "#94a3b8";
+      } else {
+        hint.innerText = `🔍 目前僅聚焦：${currentFilterOwner}`;
+        hint.style.color = "#f472b6";
+      }
+      renderGroups();
+      renderOwnerSummary();
+    }
+
+    // 時鐘、倒數與逾期檢查
     function updateClockAndTimer() {
       const now = new Date();
       document.getElementById('realtimeClock').innerText = `現在時間：${now.toLocaleTimeString('zh-TW', { hour12: false })}`;
+
+      // 檢查事項是否逾期並更新狀態標籤
+      checkTaskOverdue(now);
 
       if (!schedule || schedule.length === 0) {
         document.getElementById('currentStageBadge').innerText = "未設定流程";
@@ -327,6 +403,21 @@
           }, 1200);
         }
       }
+    }
+
+    function checkTaskOverdue(now) {
+      const nowStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+      document.querySelectorAll('.time-tag[data-time]').forEach(el => {
+        const taskTime = el.getAttribute('data-time');
+        const isDone = el.getAttribute('data-done') === 'true';
+        if (!isDone && taskTime && nowStr > taskTime) {
+          el.classList.add('overdue');
+          el.title = "⚠️ 此任務已超過預計執行時間！";
+        } else {
+          el.classList.remove('overdue');
+          el.title = "點擊可修改時間";
+        }
+      });
     }
 
     function highlightActiveStage(activeId) {
@@ -435,7 +526,7 @@
       }
     }
 
-    // 組別管理
+    // 組別管理（含身分篩選、點擊更換負責人與時間）
     function renderGroups() {
       const container = document.getElementById('groupsContainer');
       container.innerHTML = '';
@@ -447,9 +538,21 @@
 
       groups.forEach((group) => {
         const isCollapsed = collapsedGroupIds.has(group.id);
-        const tasks = group.tasks || [];
-        const total = tasks.length;
-        const doneCount = tasks.filter(t => t.done).length;
+        const allTasks = group.tasks || [];
+        
+        // 身分篩選判定
+        const visibleTasks = allTasks.filter(task => {
+          if (currentFilterOwner === 'ALL') return true;
+          return task.owner && task.owner.trim() === currentFilterOwner;
+        });
+
+        // 若開啟篩選且該組完全沒有該負責人的任務，則在手機上直接隱藏此組別卡片，保持畫面乾淨
+        if (currentFilterOwner !== 'ALL' && visibleTasks.length === 0) {
+          return;
+        }
+
+        const total = allTasks.length;
+        const doneCount = allTasks.filter(t => t.done).length;
         const percent = total === 0 ? 0 : Math.round((doneCount / total) * 100);
 
         const card = document.createElement('div');
@@ -457,15 +560,29 @@
         card.id = `group-card-${group.id}`;
         
         let tasksHtml = '';
-        tasks.forEach(task => {
+        visibleTasks.forEach(task => {
           tasksHtml += `
             <div class="task-item ${task.done ? 'done' : ''}">
-              <div class="task-left" onclick="toggleTask(${group.id}, ${task.id})">
+              <div class="task-left">
                 <input type="checkbox" ${task.done ? 'checked' : ''} style="cursor:pointer;" onchange="toggleTask(${group.id}, ${task.id})">
-                <span class="task-text">${escapeHtml(task.text)}</span>
-                ${task.owner ? `<span class="owner-tag">👤 ${escapeHtml(task.owner)}</span>` : ''}
+                
+                ${task.time ? `
+                  <span class="time-tag" data-time="${task.time}" data-done="${task.done}" onclick="editTaskTime(${group.id}, ${task.id})">
+                    ⏰ ${task.time}
+                  </span>
+                ` : `
+                  <span class="time-tag" style="opacity:0.4; border-style:dashed;" onclick="editTaskTime(${group.id}, ${task.id})">
+                    +時間
+                  </span>
+                `}
+
+                <span class="task-text" onclick="toggleTask(${group.id}, ${task.id})">${escapeHtml(task.text)}</span>
+
+                <span class="owner-tag" title="點擊可更換負責人" onclick="editTaskOwner(${group.id}, ${task.id})">
+                  👤 ${task.owner ? escapeHtml(task.owner) : '指派'}
+                </span>
               </div>
-              <button class="btn-danger" onclick="deleteTask(${group.id}, ${task.id})" style="padding:2px 6px;">✕</button>
+              <button class="btn-danger" onclick="deleteTask(${group.id}, ${task.id})">✕</button>
             </div>
           `;
         });
@@ -492,10 +609,11 @@
           </div>
 
           <div class="group-body">
-            <div class="task-list">${tasksHtml || '<div style="color:#64748b; font-size:12px; padding:2px 0;">暫無事項</div>'}</div>
+            <div class="task-list">${tasksHtml || '<div style="color:#64748b; font-size:12px; padding:2px 0;">此組無相關事項</div>'}</div>
             <div class="add-box">
               <input type="text" id="input-task-${group.id}" class="input-task-text" placeholder="待辦事項...">
               <input type="text" id="input-owner-${group.id}" class="input-task-owner" placeholder="負責人">
+              <input type="time" id="input-time-${group.id}" class="input-task-time">
               <button class="btn-slate" onclick="addTask(${group.id})">新增</button>
             </div>
           </div>
@@ -504,17 +622,22 @@
       });
     }
 
-    // 負責人看板：自動從所有組別中抓出每個人負責的事情
+    // 負責人看板（依個人彙整）
     function renderOwnerSummary() {
       const container = document.getElementById('ownerContainer');
       container.innerHTML = '';
 
-      // 依負責人統整事項
       const ownerMap = {};
 
       groups.forEach(group => {
         (group.tasks || []).forEach(task => {
-          const ownerKey = task.owner ? task.owner.trim() : '（未指派負責人）';
+          const ownerKey = task.owner && task.owner.trim() ? task.owner.trim() : '（未指派負責人）';
+          
+          // 如果開啟了特定身分篩選，右側也只聚焦該身分
+          if (currentFilterOwner !== 'ALL' && ownerKey !== currentFilterOwner) {
+            return;
+          }
+
           if (!ownerMap[ownerKey]) {
             ownerMap[ownerKey] = [];
           }
@@ -528,11 +651,10 @@
 
       const ownerNames = Object.keys(ownerMap);
       if (ownerNames.length === 0) {
-        container.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px 0; font-size: 13px;">目前各組尚無待辦事項。</div>`;
+        container.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px 0; font-size: 13px;">目前無符合的事項。</div>`;
         return;
       }
 
-      // 未指派排最後，其他按名字排序
       ownerNames.sort((a, b) => {
         if (a === '（未指派負責人）') return 1;
         if (b === '（未指派負責人）') return -1;
@@ -552,10 +674,11 @@
         tasks.forEach(t => {
           taskItemsHtml += `
             <div class="task-item ${t.done ? 'done' : ''}">
-              <div class="task-left" onclick="toggleTask(${t.groupId}, ${t.id})">
+              <div class="task-left">
                 <input type="checkbox" ${t.done ? 'checked' : ''} style="cursor:pointer;" onchange="toggleTask(${t.groupId}, ${t.id})">
                 <span class="owner-task-badge">${escapeHtml(t.groupName)}</span>
-                <span class="task-text">${escapeHtml(t.text)}</span>
+                ${t.time ? `<span class="time-tag" data-time="${t.time}" data-done="${t.done}">⏰ ${t.time}</span>` : ''}
+                <span class="task-text" onclick="toggleTask(${t.groupId}, ${t.id})">${escapeHtml(t.text)}</span>
               </div>
             </div>
           `;
@@ -611,8 +734,10 @@
     function addTask(groupId) {
       const taskInput = document.getElementById(`input-task-${groupId}`);
       const ownerInput = document.getElementById(`input-owner-${groupId}`);
+      const timeInput = document.getElementById(`input-time-${groupId}`);
       const text = taskInput.value.trim();
       const owner = ownerInput.value.trim();
+      const time = timeInput.value;
       if (!text) return;
 
       const group = groups.find(g => g.id === groupId);
@@ -622,8 +747,37 @@
           id: Date.now(),
           text: text,
           owner: owner,
+          time: time || '',
           done: false
         });
+        saveGroupsToCloud();
+      }
+    }
+
+    // 點擊即時更換負責人
+    function editTaskOwner(groupId, taskId) {
+      const group = groups.find(g => g.id === groupId);
+      if (!group || !group.tasks) return;
+      const task = group.tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      const newOwner = prompt(`更換「${task.text}」的負責人：\n（若要取消指派，請留空後按確定）`, task.owner || '');
+      if (newOwner !== null) {
+        task.owner = newOwner.trim();
+        saveGroupsToCloud();
+      }
+    }
+
+    // 點擊即時修改執行時間
+    function editTaskTime(groupId, taskId) {
+      const group = groups.find(g => g.id === groupId);
+      if (!group || !group.tasks) return;
+      const task = group.tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      const newTime = prompt(`設定或修改「${task.text}」的執行時間（格式如 17:30）：\n（若要清除時間，請留空後按確定）`, task.time || '');
+      if (newTime !== null) {
+        task.time = newTime.trim();
         saveGroupsToCloud();
       }
     }
