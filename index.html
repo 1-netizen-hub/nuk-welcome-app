@@ -41,6 +41,8 @@
     .btn-warning:hover { background: rgba(245, 158, 11, 0.3); }
     .btn-success { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
     .btn-success:hover { background: rgba(34, 197, 94, 0.3); }
+    .btn-sheet { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .btn-sheet:hover { background: rgba(16, 185, 129, 0.3); }
     .btn-danger { background: #991b1b; color: #fecaca; padding: 3px 6px; font-size: 11px; }
 
     /* 身分篩選專區 */
@@ -99,7 +101,6 @@
     .owner-tag { font-size: 11px; background: rgba(148, 163, 184, 0.15); color: #cbd5e1; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(148, 163, 184, 0.25); white-space: nowrap; cursor: pointer; }
     .owner-tag:hover { background: rgba(148, 163, 184, 0.3); border-color: #38bdf8; }
 
-    /* 時段區間標籤 */
     .time-tag { font-size: 11px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.25); white-space: nowrap; cursor: pointer; font-family: monospace; }
     .time-tag:hover { background: rgba(56, 189, 248, 0.25); }
     .time-tag.overdue { background: rgba(239, 68, 68, 0.25); color: #f87171; border-color: #ef4444; font-weight: bold; animation: pulse 1.5s infinite; }
@@ -122,7 +123,7 @@
     .owner-card-title { font-size: 14px; font-weight: 700; color: #a78bfa; display: flex; align-items: center; gap: 6px; }
     .owner-task-badge { font-size: 10px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 1px 5px; border-radius: 4px; }
 
-    /* 空窗閒置提醒框 */
+    /* 空窗提醒框 */
     .idle-alert-box { background: rgba(245, 158, 11, 0.1); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 6px; padding: 6px 10px; font-size: 11px; color: #fbbf24; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
 
     /* 歷史專區摺疊面板 */
@@ -154,6 +155,7 @@
         <div class="clock-display" id="realtimeClock">現在時間：--:--:--</div>
       </div>
       <div class="header-actions">
+        <button class="btn-sheet" id="openSheetBtn" onclick="openSpreadsheet()" title="開啟 Google 試算表">📊 試算表細流</button>
         <button class="btn-success" onclick="saveCurrentToHistory()">💾 封存為歷史紀錄</button>
         <button class="btn-subtle" onclick="testGentleVoice()">🌸 語音測試</button>
         <button class="btn-pink" onclick="triggerGlobalBroadcast()">📢 全場廣播</button>
@@ -185,7 +187,10 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">⏱️ 細流流程控制</div>
-          <button class="btn-slate" onclick="addNewStage()">+ 流程</button>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-sheet" onclick="editSpreadsheetUrl()" style="padding: 4px 8px; font-size: 11px;">🔗 設定試算表</button>
+            <button class="btn-slate" onclick="addNewStage()">+ 流程</button>
+          </div>
         </div>
         <div class="schedule-list" id="scheduleContainer"></div>
       </div>
@@ -229,7 +234,7 @@
       </div>
     </div>
 
-    <footer>高大社團・溫柔控場場佈系統 v10.0 (支援時段區間與幹部空窗閒置檢測)</footer>
+    <footer>高大社團・溫柔控場場佈系統 v11.0 (整合 Google 試算表雲端綁定與直達)</footer>
   </div>
 
   <script>
@@ -265,6 +270,7 @@
     let schedule = [];
     let groups = [];
     let historyEvents = {};
+    let spreadsheetUrl = '';
     let collapsedGroupIds = new Set();
     let currentFilterOwner = 'ALL';
     let announcedMilestones = new Set();
@@ -275,7 +281,6 @@
       return ownerStr.split(/[,，、/／\s]+/).map(s => s.trim()).filter(Boolean);
     }
 
-    // 時間格式化與比較
     function compareTaskTime(a, b) {
       const aStart = a.startTime || a.time || '';
       const bStart = b.startTime || b.time || '';
@@ -310,6 +315,20 @@
         }
       });
 
+      // 監聽試算表連結
+      db.ref('spreadsheet_url').on('value', (snapshot) => {
+        spreadsheetUrl = snapshot.val() || '';
+        const btn = document.getElementById('openSheetBtn');
+        if (spreadsheetUrl) {
+          btn.style.opacity = '1';
+          btn.title = '開啟 Google 試算表完整細流';
+        } else {
+          btn.style.opacity = '0.6';
+          btn.title = '尚未設定試算表連結（點擊左側設定）';
+        }
+      });
+
+      // 監聽細流
       db.ref('event_schedule').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -322,6 +341,7 @@
         renderOwnerSummary();
       });
 
+      // 監聽各組事項
       db.ref('event_groups').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -338,11 +358,13 @@
         renderOwnerSummary();
       });
 
+      // 監聽歷史紀錄
       db.ref('history_events').on('value', (snapshot) => {
         historyEvents = snapshot.val() || {};
         renderHistoryList();
       });
 
+      // 監聽全場廣播
       db.ref('global_broadcast').limitToLast(1).on('child_added', (snapshot) => {
         if (!initialBroadcastIgnored) {
           initialBroadcastIgnored = true;
@@ -358,7 +380,28 @@
     function saveScheduleToCloud() { db.ref('event_schedule').set(schedule); }
     function saveGroupsToCloud() { db.ref('event_groups').set(groups); }
 
-    // 歷史紀錄相關
+    // 試算表連結控制
+    function openSpreadsheet() {
+      if (!spreadsheetUrl) {
+        if (confirm("目前尚未設定社團的 Google 試算表連結！\n是否現在立刻貼上連結？")) {
+          editSpreadsheetUrl();
+        }
+        return;
+      }
+      window.open(spreadsheetUrl, '_blank');
+    }
+
+    function editSpreadsheetUrl() {
+      const newUrl = prompt("請輸入或貼上社團 Google 試算表（Google Sheets）的共用連結：", spreadsheetUrl);
+      if (newUrl !== null) {
+        spreadsheetUrl = newUrl.trim();
+        db.ref('spreadsheet_url').set(spreadsheetUrl, (err) => {
+          if (!err) alert("✅ 試算表連結已更新並同步給全體幹部！");
+        });
+      }
+    }
+
+    // 歷史紀錄
     function toggleHistoryPanel() {
       document.getElementById('historyPanel').classList.toggle('collapsed');
     }
@@ -371,6 +414,7 @@
       const record = {
         name: name.trim(),
         savedAt: dateStr,
+        spreadsheetUrl: spreadsheetUrl,
         schedule: schedule,
         groups: groups
       };
@@ -394,6 +438,7 @@
         const item = historyEvents[key];
         const scheduleCount = (item.schedule || []).length;
         const groupCount = (item.groups || []).length;
+        const hasSheet = !!item.spreadsheetUrl;
 
         const card = document.createElement('div');
         card.className = 'history-card';
@@ -404,7 +449,7 @@
             </div>
             <div class="history-card-date">🕒 存檔時間：${escapeHtml(item.savedAt || '--')}</div>
             <div class="history-card-desc" style="margin-top: 6px;">
-              包含 ${scheduleCount} 個流程階段、${groupCount} 個工作組別
+              包含 ${scheduleCount} 個階段、${groupCount} 個組別 ${hasSheet ? '・📊含試算表' : ''}
             </div>
           </div>
           <div class="history-card-actions">
@@ -434,9 +479,11 @@
       }
 
       db.ref('event_schedule').set(loadedSchedule);
-      db.ref('event_groups').set(loadedGroups, (err) => {
-        if (!err) alert(`✅ 已成功載入「${item.name}」！全場幹部畫面已同步更新。`);
-      });
+      db.ref('event_groups').set(loadedGroups);
+      if (item.spreadsheetUrl) {
+        db.ref('spreadsheet_url').set(item.spreadsheetUrl);
+      }
+      alert(`✅ 已成功載入「${item.name}」！全場畫面已同步更新。`);
     }
 
     function deleteHistoryRecord(key) {
@@ -698,7 +745,7 @@
       }
     }
 
-    // 各組事項管理（時段區間）
+    // 各組事項管理
     function renderGroups() {
       const container = document.getElementById('groupsContainer');
       container.innerHTML = '';
@@ -806,10 +853,8 @@
       });
     }
 
-    // 計算某負責人在各細流時段是否有空窗
     function findIdleGapsForOwner(ownerTasks, sortedSchedule) {
       if (!sortedSchedule || sortedSchedule.length < 2) return [];
-
       const idleGaps = [];
 
       for (let i = 0; i < sortedSchedule.length - 1; i++) {
@@ -818,13 +863,10 @@
         const segStart = stageA.time;
         const segEnd = stageB.time;
 
-        // 檢查該幹部在 segStart ~ segEnd 之間是否有任務覆蓋
         const hasTask = ownerTasks.some(t => {
           const tStart = t.startTime || t.time || '';
           const tEnd = t.endTime || tStart;
           if (!tStart) return false;
-
-          // 若任務時間與細流區間有重疊即視為有事做
           return (tStart < segEnd && tEnd > segStart) || (tStart >= segStart && tStart < segEnd);
         });
 
@@ -832,11 +874,10 @@
           idleGaps.push(`${segStart}~${segEnd} (${stageA.name}時段)`);
         }
       }
-
       return idleGaps;
     }
 
-    // 負責人看板（含空窗提醒）
+    // 負責人看板
     function renderOwnerSummary() {
       const container = document.getElementById('ownerContainer');
       container.innerHTML = '';
@@ -888,7 +929,6 @@
         const doneCount = tasks.filter(t => t.done).length;
         const percent = Math.round((doneCount / total) * 100);
 
-        // 空窗檢測（針對具體名字的幹部進行細流時間覆蓋檢測）
         let idleHtml = '';
         if (owner !== '（未指派負責人）') {
           const gaps = findIdleGapsForOwner(tasks, sortedSchedule);
@@ -1011,7 +1051,6 @@
       }
     }
 
-    // 點擊即時修改時段區間
     function editTaskTimeRange(groupId, taskId) {
       const group = groups.find(g => g.id === groupId);
       if (!group || !group.tasks) return;
@@ -1032,7 +1071,7 @@
 
       task.startTime = newStart.trim();
       task.endTime = newEnd;
-      delete task.time; // 舊格式轉移
+      delete task.time;
       saveGroupsToCloud();
     }
 
