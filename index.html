@@ -47,7 +47,7 @@
     .filter-select { background: #121318; border: 1px solid #6366f1; color: #f1f5f9; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; outline: none; cursor: pointer; }
 
     /* 主倒數計時大畫幅 */
-    .hero-banner { background: linear-gradient(135deg, #1e1b2e 0%, #172554 100%); border: 1px solid #3b0764; border-radius: 16px; padding: 24px 16px; text-align: center; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); position: relative; }
+    .hero-banner { background: linear-gradient(135deg, #1e1b2e 0%, #172554 100%); border: 1px solid #3b0764; border-radius: 16px; padding: 24px 16px; text-align: center; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); }
     .stage-badge { display: inline-block; background: rgba(244, 114, 182, 0.2); color: #f472b6; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 8px; border: 1px solid rgba(244, 114, 182, 0.3); }
     .big-timer { font-size: clamp(52px, 10vw, 84px); font-weight: 800; font-family: monospace; color: #fb7185; letter-spacing: -2px; line-height: 1; margin: 8px 0; text-shadow: 0 0 20px rgba(251, 113, 133, 0.3); }
     .next-stage-hint { color: #cbd5e1; font-size: 14px; margin-top: 4px; }
@@ -183,14 +183,14 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">👤 個人專屬工作彙整</div>
-          <span style="font-size: 11px; color: #94a3b8;">自動分類（支援多人合作）</span>
+          <span style="font-size: 11px; color: #94a3b8;">按時間排序 (支援多人)</span>
         </div>
         <div class="owner-container" id="ownerContainer"></div>
       </div>
 
     </div>
 
-    <footer>高大社團・溫柔控場場佈系統 v7.0 (支援多人共同負責、細流靜音模式)</footer>
+    <footer>高大社團・溫柔控場場佈系統 v8.0 (各組事項與個人彙整皆依執行時間排序)</footer>
   </div>
 
   <script>
@@ -214,7 +214,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 預設細流（報到階段預設 mute: true 靜音，不打擾學員）
     const defaultSchedule = [
       { id: 1, name: '集合', time: '17:00', mute: false },
       { id: 2, name: '移動', time: '17:15', mute: false },
@@ -231,10 +230,20 @@
     let announcedMilestones = new Set();
     let initialBroadcastIgnored = false;
 
-    // 工具函式：拆解多人名字（支援逗號、頓號、斜線、空格）
     function parseOwners(ownerStr) {
       if (!ownerStr || !ownerStr.trim()) return [];
       return ownerStr.split(/[,，、/／\s]+/).map(s => s.trim()).filter(Boolean);
+    }
+
+    // 核心時間排序函式：有時間的排前面（升序），無時間的排最後，時間相同的照建立順序
+    function compareTaskTime(a, b) {
+      if (a.time && b.time) {
+        const cmp = a.time.localeCompare(b.time);
+        return cmp !== 0 ? cmp : (a.id - b.id);
+      }
+      if (a.time && !b.time) return -1;
+      if (!a.time && b.time) return 1;
+      return a.id - b.id;
     }
 
     window.onload = function() {
@@ -332,7 +341,6 @@
       renderOwnerSummary();
     }
 
-    // 時鐘、倒數與靜音播音判定
     function updateClockAndTimer() {
       const now = new Date();
       document.getElementById('realtimeClock').innerText = `現在時間：${now.toLocaleTimeString('zh-TW', { hour12: false })}`;
@@ -388,7 +396,6 @@
         const milestoneKey = `${nextStage.name}_${min}`;
         if (min === 5 && sec === 0 && !announcedMilestones.has(milestoneKey)) {
           announcedMilestones.add(milestoneKey);
-          // 若未設定靜音才播音
           if (!nextStage.mute) {
             playGentleChime();
             setTimeout(() => {
@@ -433,7 +440,6 @@
       }
     }
 
-    // 語音音效
     function playGentleChime() {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -484,7 +490,7 @@
       db.ref('global_broadcast').push({ text: msg, timestamp: Date.now() });
     }
 
-    // 細流管理（含靜音切換）
+    // 細流流程
     function renderSchedule() {
       const container = document.getElementById('scheduleContainer');
       container.innerHTML = '';
@@ -545,7 +551,7 @@
       }
     }
 
-    // 組別管理（支援多人負責標籤）
+    // 各組事項管理（加入依執行時間排序）
     function renderGroups() {
       const container = document.getElementById('groupsContainer');
       container.innerHTML = '';
@@ -558,8 +564,11 @@
       groups.forEach((group) => {
         const isCollapsed = collapsedGroupIds.has(group.id);
         const allTasks = group.tasks || [];
+
+        // 依執行時間排序
+        const sortedTasks = [...allTasks].sort(compareTaskTime);
         
-        const visibleTasks = allTasks.filter(task => {
+        const visibleTasks = sortedTasks.filter(task => {
           if (currentFilterOwner === 'ALL') return true;
           const owners = parseOwners(task.owner);
           return owners.includes(currentFilterOwner);
@@ -645,7 +654,7 @@
       });
     }
 
-    // 負責人看板（支援多人同步歸戶）
+    // 負責人看板（加入依執行時間排序）
     function renderOwnerSummary() {
       const container = document.getElementById('ownerContainer');
       container.innerHTML = '';
@@ -689,6 +698,9 @@
 
       ownerNames.forEach(owner => {
         const tasks = ownerMap[owner];
+        // 依執行時間排序個人清單
+        tasks.sort(compareTaskTime);
+
         const total = tasks.length;
         const doneCount = tasks.filter(t => t.done).length;
         const percent = Math.round((doneCount / total) * 100);
