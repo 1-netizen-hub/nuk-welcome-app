@@ -20,7 +20,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
     body { background-color: #121318; color: #f1f5f9; min-height: 100vh; padding: 16px; display: flex; flex-direction: column; align-items: center; }
     
-    .container { width: 100%; max-width: 1250px; }
+    .container { width: 100%; max-width: 1300px; }
 
     /* Header */
     header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #2e3440; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
@@ -55,7 +55,7 @@
     .next-stage-hint { color: #cbd5e1; font-size: 14px; margin-top: 4px; }
 
     /* 三欄排版架構 */
-    .main-grid { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 18px; margin-bottom: 24px; }
+    .main-grid { display: grid; grid-template-columns: 1fr 1.2fr 1.1fr; gap: 18px; margin-bottom: 24px; }
     @media (max-width: 1050px) { .main-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } }
 
@@ -99,6 +99,7 @@
     .owner-tag { font-size: 11px; background: rgba(148, 163, 184, 0.15); color: #cbd5e1; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(148, 163, 184, 0.25); white-space: nowrap; cursor: pointer; }
     .owner-tag:hover { background: rgba(148, 163, 184, 0.3); border-color: #38bdf8; }
 
+    /* 時段區間標籤 */
     .time-tag { font-size: 11px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.25); white-space: nowrap; cursor: pointer; font-family: monospace; }
     .time-tag:hover { background: rgba(56, 189, 248, 0.25); }
     .time-tag.overdue { background: rgba(239, 68, 68, 0.25); color: #f87171; border-color: #ef4444; font-weight: bold; animation: pulse 1.5s infinite; }
@@ -108,18 +109,21 @@
       50% { opacity: 0.6; }
     }
 
-    .add-box { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .add-box { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
     .add-box input[type="text"], .add-box input[type="time"] { background: #18181b; border: 1px solid #3f3f46; color: white; border-radius: 6px; padding: 5px 8px; font-size: 12px; }
-    .input-task-text { flex-grow: 1; min-width: 140px; }
-    .input-task-owner { width: 95px; }
-    .input-task-time { width: 85px; }
+    .input-task-text { flex-grow: 1; min-width: 130px; }
+    .input-task-owner { width: 90px; }
+    .time-range-group { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #94a3b8; }
 
     /* 負責人彙整卡片 */
     .owner-container { display: flex; flex-direction: column; gap: 12px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
     .owner-card { background: #27272a; border-radius: 10px; padding: 12px 14px; border: 1px solid #3f3f46; }
-    .owner-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .owner-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
     .owner-card-title { font-size: 14px; font-weight: 700; color: #a78bfa; display: flex; align-items: center; gap: 6px; }
     .owner-task-badge { font-size: 10px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 1px 5px; border-radius: 4px; }
+
+    /* 空窗閒置提醒框 */
+    .idle-alert-box { background: rgba(245, 158, 11, 0.1); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 6px; padding: 6px 10px; font-size: 11px; color: #fbbf24; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
 
     /* 歷史專區摺疊面板 */
     .history-panel { background: #18181b; border: 1px solid #3b0764; border-radius: 14px; padding: 16px; margin-bottom: 24px; transition: all 0.2s ease; }
@@ -198,11 +202,11 @@
         <div class="groups-container" id="groupsContainer"></div>
       </div>
 
-      <!-- 欄位 3：依負責人彙整清單 -->
+      <!-- 欄位 3：依負責人彙整清單（含空窗提醒） -->
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">👤 個人專屬工作彙整</div>
-          <span style="font-size: 11px; color: #94a3b8;">按時間排序 (支援多人)</span>
+          <div class="panel-title">👤 個人專屬工作與空窗監測</div>
+          <span style="font-size: 11px; color: #94a3b8;">自動檢測時段空窗</span>
         </div>
         <div class="owner-container" id="ownerContainer"></div>
       </div>
@@ -225,7 +229,7 @@
       </div>
     </div>
 
-    <footer>高大社團・溫柔控場場佈系統 v9.0 (整合歷史紀錄摺疊庫與範本還原)</footer>
+    <footer>高大社團・溫柔控場場佈系統 v10.0 (支援時段區間與幹部空窗閒置檢測)</footer>
   </div>
 
   <script>
@@ -271,14 +275,25 @@
       return ownerStr.split(/[,，、/／\s]+/).map(s => s.trim()).filter(Boolean);
     }
 
+    // 時間格式化與比較
     function compareTaskTime(a, b) {
-      if (a.time && b.time) {
-        const cmp = a.time.localeCompare(b.time);
+      const aStart = a.startTime || a.time || '';
+      const bStart = b.startTime || b.time || '';
+      if (aStart && bStart) {
+        const cmp = aStart.localeCompare(bStart);
         return cmp !== 0 ? cmp : (a.id - b.id);
       }
-      if (a.time && !b.time) return -1;
-      if (!a.time && b.time) return 1;
+      if (aStart && !bStart) return -1;
+      if (!aStart && bStart) return 1;
       return a.id - b.id;
+    }
+
+    function formatTimeLabel(task) {
+      const s = task.startTime || task.time || '';
+      const e = task.endTime || '';
+      if (s && e) return `${s} ~ ${e}`;
+      if (s) return `${s}`;
+      return '';
     }
 
     window.onload = function() {
@@ -295,7 +310,6 @@
         }
       });
 
-      // 監聽細流
       db.ref('event_schedule').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -305,9 +319,9 @@
           db.ref('event_schedule').set(defaultSchedule);
         }
         renderSchedule();
+        renderOwnerSummary();
       });
 
-      // 監聽組別事項
       db.ref('event_groups').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -324,13 +338,11 @@
         renderOwnerSummary();
       });
 
-      // 監聽歷史紀錄
       db.ref('history_events').on('value', (snapshot) => {
         historyEvents = snapshot.val() || {};
         renderHistoryList();
       });
 
-      // 監聽全場廣播
       db.ref('global_broadcast').limitToLast(1).on('child_added', (snapshot) => {
         if (!initialBroadcastIgnored) {
           initialBroadcastIgnored = true;
@@ -346,7 +358,7 @@
     function saveScheduleToCloud() { db.ref('event_schedule').set(schedule); }
     function saveGroupsToCloud() { db.ref('event_groups').set(groups); }
 
-    // 歷史紀錄相關邏輯
+    // 歷史紀錄相關
     function toggleHistoryPanel() {
       document.getElementById('historyPanel').classList.toggle('collapsed');
     }
@@ -364,9 +376,7 @@
       };
 
       db.ref('history_events').push(record, (err) => {
-        if (!err) {
-          alert(`🎉 成功封存「${name.trim()}」至歷史庫！`);
-        }
+        if (!err) alert(`🎉 成功封存「${name.trim()}」至歷史庫！`);
       });
     }
 
@@ -410,10 +420,8 @@
       const item = historyEvents[key];
       if (!item) return;
 
-      const confirmLoad = confirm(`確定要將目前畫面替換為「${item.name}」嗎？\n（當前畫面會被覆蓋，建議先將目前活動存檔）`);
-      if (!confirmLoad) return;
-
-      const resetChecks = confirm(`是否要將所有事項的打勾狀態重設為「未完成」？\n按「確定」：乾淨重跑活動\n按「取消」：保留當時打勾進度`);
+      if (!confirm(`確定要將目前畫面替換為「${item.name}」嗎？`)) return;
+      const resetChecks = confirm(`是否要將所有事項的打勾狀態重設為「未完成」？\n按「確定」：乾淨重跑\n按「取消」：保留原打勾進度`);
 
       let loadedSchedule = item.schedule || defaultSchedule;
       let loadedGroups = item.groups || [];
@@ -425,12 +433,9 @@
         }));
       }
 
-      // 同步寫入雲端
       db.ref('event_schedule').set(loadedSchedule);
       db.ref('event_groups').set(loadedGroups, (err) => {
-        if (!err) {
-          alert(`✅ 已成功載入「${item.name}」！全場幹部畫面已同步更新。`);
-        }
+        if (!err) alert(`✅ 已成功載入「${item.name}」！全場幹部畫面已同步更新。`);
       });
     }
 
@@ -442,7 +447,7 @@
       }
     }
 
-    // 篩選與渲染管理
+    // 篩選管理
     function updateFilterOptions() {
       const select = document.getElementById('userRoleFilter');
       const currentSelected = select.value;
@@ -561,15 +566,15 @@
 
     function checkTaskOverdue(now) {
       const nowStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
-      document.querySelectorAll('.time-tag[data-time]').forEach(el => {
-        const taskTime = el.getAttribute('data-time');
+      document.querySelectorAll('.time-tag[data-deadline]').forEach(el => {
+        const deadline = el.getAttribute('data-deadline');
         const isDone = el.getAttribute('data-done') === 'true';
-        if (!isDone && taskTime && nowStr > taskTime) {
+        if (!isDone && deadline && nowStr > deadline) {
           el.classList.add('overdue');
-          el.title = "⚠️ 此任務已超過預計執行時間！";
+          el.title = "⚠️ 此任務時段已超過預計結束時間！";
         } else {
           el.classList.remove('overdue');
-          el.title = "點擊可修改時間";
+          el.title = "點擊可修改時段";
         }
       });
     }
@@ -693,7 +698,7 @@
       }
     }
 
-    // 各組事項管理
+    // 各組事項管理（時段區間）
     function renderGroups() {
       const container = document.getElementById('groupsContainer');
       container.innerHTML = '';
@@ -736,18 +741,21 @@
             ownersHtml = `<span class="owner-tag" onclick="editTaskOwner(${group.id}, ${task.id})">👤 指派</span>`;
           }
 
+          const timeLabel = formatTimeLabel(task);
+          const deadlineTime = task.endTime || task.startTime || task.time || '';
+
           tasksHtml += `
             <div class="task-item ${task.done ? 'done' : ''}">
               <div class="task-left">
                 <input type="checkbox" ${task.done ? 'checked' : ''} style="cursor:pointer;" onchange="toggleTask(${group.id}, ${task.id})">
                 
-                ${task.time ? `
-                  <span class="time-tag" data-time="${task.time}" data-done="${task.done}" onclick="editTaskTime(${group.id}, ${task.id})">
-                    ⏰ ${task.time}
+                ${timeLabel ? `
+                  <span class="time-tag" data-deadline="${deadlineTime}" data-done="${task.done}" onclick="editTaskTimeRange(${group.id}, ${task.id})">
+                    ⏰ ${timeLabel}
                   </span>
                 ` : `
-                  <span class="time-tag" style="opacity:0.4; border-style:dashed;" onclick="editTaskTime(${group.id}, ${task.id})">
-                    +時間
+                  <span class="time-tag" style="opacity:0.4; border-style:dashed;" onclick="editTaskTimeRange(${group.id}, ${task.id})">
+                    +時段
                   </span>
                 `}
 
@@ -784,8 +792,12 @@
             <div class="task-list">${tasksHtml || '<div style="color:#64748b; font-size:12px; padding:2px 0;">此組無相關事項</div>'}</div>
             <div class="add-box">
               <input type="text" id="input-task-${group.id}" class="input-task-text" placeholder="待辦事項...">
-              <input type="text" id="input-owner-${group.id}" class="input-task-owner" placeholder="負責人(可多人逗號分開)">
-              <input type="time" id="input-time-${group.id}" class="input-task-time">
+              <input type="text" id="input-owner-${group.id}" class="input-task-owner" placeholder="負責人(可多人)">
+              <div class="time-range-group">
+                <input type="time" id="input-stime-${group.id}" title="開始時間">
+                <span>~</span>
+                <input type="time" id="input-etime-${group.id}" title="結束時間(選填)">
+              </div>
               <button class="btn-slate" onclick="addTask(${group.id})">新增</button>
             </div>
           </div>
@@ -794,7 +806,37 @@
       });
     }
 
-    // 負責人看板
+    // 計算某負責人在各細流時段是否有空窗
+    function findIdleGapsForOwner(ownerTasks, sortedSchedule) {
+      if (!sortedSchedule || sortedSchedule.length < 2) return [];
+
+      const idleGaps = [];
+
+      for (let i = 0; i < sortedSchedule.length - 1; i++) {
+        const stageA = sortedSchedule[i];
+        const stageB = sortedSchedule[i + 1];
+        const segStart = stageA.time;
+        const segEnd = stageB.time;
+
+        // 檢查該幹部在 segStart ~ segEnd 之間是否有任務覆蓋
+        const hasTask = ownerTasks.some(t => {
+          const tStart = t.startTime || t.time || '';
+          const tEnd = t.endTime || tStart;
+          if (!tStart) return false;
+
+          // 若任務時間與細流區間有重疊即視為有事做
+          return (tStart < segEnd && tEnd > segStart) || (tStart >= segStart && tStart < segEnd);
+        });
+
+        if (!hasTask) {
+          idleGaps.push(`${segStart}~${segEnd} (${stageA.name}時段)`);
+        }
+      }
+
+      return idleGaps;
+    }
+
+    // 負責人看板（含空窗提醒）
     function renderOwnerSummary() {
       const container = document.getElementById('ownerContainer');
       container.innerHTML = '';
@@ -836,6 +878,8 @@
         return a.localeCompare(b, 'zh-TW');
       });
 
+      const sortedSchedule = [...schedule].sort((a, b) => a.time.localeCompare(b.time));
+
       ownerNames.forEach(owner => {
         const tasks = ownerMap[owner];
         tasks.sort(compareTaskTime);
@@ -844,6 +888,19 @@
         const doneCount = tasks.filter(t => t.done).length;
         const percent = Math.round((doneCount / total) * 100);
 
+        // 空窗檢測（針對具體名字的幹部進行細流時間覆蓋檢測）
+        let idleHtml = '';
+        if (owner !== '（未指派負責人）') {
+          const gaps = findIdleGapsForOwner(tasks, sortedSchedule);
+          if (gaps.length > 0) {
+            idleHtml = `
+              <div class="idle-alert-box">
+                <span>⚠️ 空窗未安排：${escapeHtml(gaps.join('、'))}</span>
+              </div>
+            `;
+          }
+        }
+
         const card = document.createElement('div');
         card.className = 'owner-card';
 
@@ -851,13 +908,15 @@
         tasks.forEach(t => {
           const partnerNames = t.allOwners.filter(o => o !== owner);
           const partnerHint = partnerNames.length > 0 ? `<span style="font-size:10px; color:#94a3b8;">(與 ${escapeHtml(partnerNames.join(','))} 合作)</span>` : '';
+          const timeLabel = formatTimeLabel(t);
+          const deadlineTime = t.endTime || t.startTime || t.time || '';
 
           taskItemsHtml += `
             <div class="task-item ${t.done ? 'done' : ''}">
               <div class="task-left">
                 <input type="checkbox" ${t.done ? 'checked' : ''} style="cursor:pointer;" onchange="toggleTask(${t.groupId}, ${t.id})">
                 <span class="owner-task-badge">${escapeHtml(t.groupName)}</span>
-                ${t.time ? `<span class="time-tag" data-time="${t.time}" data-done="${t.done}">⏰ ${t.time}</span>` : ''}
+                ${timeLabel ? `<span class="time-tag" data-deadline="${deadlineTime}" data-done="${t.done}">⏰ ${timeLabel}</span>` : ''}
                 <span class="task-text" onclick="toggleTask(${t.groupId}, ${t.id})">${escapeHtml(t.text)}</span>
                 ${partnerHint}
               </div>
@@ -882,6 +941,7 @@
           <div class="task-list" style="margin-bottom: 0;">
             ${taskItemsHtml}
           </div>
+          ${idleHtml}
         `;
         container.appendChild(card);
       });
@@ -915,10 +975,12 @@
     function addTask(groupId) {
       const taskInput = document.getElementById(`input-task-${groupId}`);
       const ownerInput = document.getElementById(`input-owner-${groupId}`);
-      const timeInput = document.getElementById(`input-time-${groupId}`);
+      const stimeInput = document.getElementById(`input-stime-${groupId}`);
+      const etimeInput = document.getElementById(`input-etime-${groupId}`);
       const text = taskInput.value.trim();
       const owner = ownerInput.value.trim();
-      const time = timeInput.value;
+      const sTime = stimeInput.value;
+      const eTime = etimeInput.value;
       if (!text) return;
 
       const group = groups.find(g => g.id === groupId);
@@ -928,7 +990,8 @@
           id: Date.now(),
           text: text,
           owner: owner,
-          time: time || '',
+          startTime: sTime || '',
+          endTime: eTime || '',
           done: false
         });
         saveGroupsToCloud();
@@ -948,17 +1011,29 @@
       }
     }
 
-    function editTaskTime(groupId, taskId) {
+    // 點擊即時修改時段區間
+    function editTaskTimeRange(groupId, taskId) {
       const group = groups.find(g => g.id === groupId);
       if (!group || !group.tasks) return;
       const task = group.tasks.find(t => t.id === taskId);
       if (!task) return;
 
-      const newTime = prompt(`設定或修改「${task.text}」的執行時間（格式如 17:30）：\n（若要清除時間，請留空後按確定）`, task.time || '');
-      if (newTime !== null) {
-        task.time = newTime.trim();
-        saveGroupsToCloud();
+      const curStart = task.startTime || task.time || '';
+      const curEnd = task.endTime || '';
+
+      const newStart = prompt(`設定開始時間（格式如 12:30）：\n（留空按確定可清除）`, curStart);
+      if (newStart === null) return;
+
+      let newEnd = '';
+      if (newStart.trim() !== '') {
+        const promptEnd = prompt(`設定結束時間（格式如 12:40，可選填）：`, curEnd);
+        if (promptEnd !== null) newEnd = promptEnd.trim();
       }
+
+      task.startTime = newStart.trim();
+      task.endTime = newEnd;
+      delete task.time; // 舊格式轉移
+      saveGroupsToCloud();
     }
 
     function toggleTask(groupId, taskId) {
