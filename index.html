@@ -45,6 +45,8 @@
     .btn-sheet:hover { background: rgba(16, 185, 129, 0.25); }
     .btn-projector { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; box-shadow: 0 0 10px rgba(99, 102, 241, 0.3); }
     .btn-projector:hover { opacity: 0.9; }
+    .btn-mode-toggle { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .btn-mode-toggle:hover { background: rgba(56, 189, 248, 0.25); }
     .btn-ghost-danger { background: transparent; color: #64748b; border: 1px solid transparent; padding: 3px 6px; font-size: 12px; border-radius: 4px; }
     .btn-ghost-danger:hover { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
 
@@ -116,31 +118,20 @@
     .task-item.done span.task-text { text-decoration: line-through; color: #475569; }
     .task-left { display: flex; align-items: center; gap: 7px; cursor: pointer; flex-grow: 1; flex-wrap: wrap; }
     
-    /* 負責人 Tag */
+    /* 標籤 */
     .owner-tag { font-size: 11px; background: rgba(167, 139, 250, 0.12); color: #c4b5fd; padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(167, 139, 250, 0.25); white-space: nowrap; cursor: pointer; }
     .owner-tag:hover { background: rgba(167, 139, 250, 0.25); }
 
-    /* 時段標籤 */
     .time-tag { font-size: 11px; background: rgba(56, 189, 248, 0.08); color: #7dd3fc; padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2); white-space: nowrap; cursor: pointer; font-family: monospace; }
     .time-tag:hover { background: rgba(56, 189, 248, 0.18); }
     .time-tag.overdue { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.35); font-weight: 600; }
 
-    /* ⚡ 當前執勤高亮（呼吸光暈焦點） */
+    /* ⚡ 當前執勤高亮 */
     .task-item.current-duty {
       background: rgba(14, 165, 233, 0.12) !important;
       border: 1px solid #38bdf8 !important;
       box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
       animation: dutyPulse 2s infinite ease-in-out;
-    }
-    .duty-badge {
-      font-size: 10px;
-      background: #0284c7;
-      color: #ffffff;
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
     }
 
     @keyframes dutyPulse {
@@ -161,8 +152,67 @@
     .owner-card-title { font-size: 13px; font-weight: 700; color: #c084fc; display: flex; align-items: center; gap: 5px; }
     .owner-task-badge { font-size: 10px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 1px 4px; border-radius: 3px; }
 
-    /* 空窗提醒框 */
     .idle-alert-box { background: rgba(245, 158, 11, 0.08); border: 1px dashed rgba(245, 158, 11, 0.3); border-radius: 5px; padding: 5px 8px; font-size: 11px; color: #fcd34d; margin-top: 6px; }
+
+    /* ⏱️ 全局時段一覽表 / 甘特圖矩陣 (Timeline View) */
+    .timeline-view-panel {
+      background: #13141a;
+      border: 1px solid #20222c;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      display: none; /* 預設隱藏，切換按鈕觸發 */
+    }
+    .timeline-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+      font-size: 12px;
+    }
+    .timeline-table th, .timeline-table td {
+      border: 1px solid #222634;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .timeline-table th {
+      background: #181a24;
+      color: #94a3b8;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .timeline-table th.current-col {
+      background: rgba(244, 114, 182, 0.15);
+      color: #f472b6;
+      border-color: #ec4899;
+    }
+    .timeline-person-name {
+      font-weight: 700;
+      color: #c084fc;
+      white-space: nowrap;
+      min-width: 90px;
+    }
+    .timeline-task-pill {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #bae6fd;
+      border-radius: 6px;
+      padding: 4px 7px;
+      margin-bottom: 4px;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+    .timeline-task-pill.is-done {
+      text-decoration: line-through;
+      opacity: 0.45;
+    }
+    .timeline-idle-cell {
+      color: #475569;
+      font-size: 11px;
+      font-style: italic;
+      padding: 4px 0;
+    }
 
     /* 歷史專區摺疊面板 */
     .history-panel { background: #13141a; border: 1px solid #282138; border-radius: 12px; padding: 14px; margin-bottom: 20px; transition: all 0.2s ease; }
@@ -178,41 +228,21 @@
     .history-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
     .history-card-name { font-weight: 700; font-size: 13px; color: #f1f5f9; }
     .history-card-date { font-size: 10px; color: #64748b; margin-top: 2px; }
-    .history-card-desc { font-size: 11px; color: #94a3b8; }
     .history-card-actions { display: flex; gap: 5px; justify-content: flex-end; margin-top: 4px; }
 
-    /* 🖥️ 投影簡報模式 (Projector Mode) */
-    body.projector-mode {
-      padding: 24px 32px;
-      background: #090a0f;
-    }
-    body.projector-mode .container {
-      max-width: 100%;
-    }
+    /* 🖥️ 投影模式 */
+    body.projector-mode { padding: 20px 28px; background: #090a0f; }
+    body.projector-mode .container { max-width: 100%; }
     body.projector-mode .add-box,
     body.projector-mode .btn-ghost-danger,
     body.projector-mode .filter-bar,
     body.projector-mode .history-panel,
-    body.projector-mode .header-actions button:not(#projectorToggleBtn),
+    body.projector-mode .header-actions button:not(#projectorToggleBtn):not(#viewModeToggleBtn),
     body.projector-mode .panel-header button {
       display: none !important;
     }
-    body.projector-mode .hero-banner {
-      padding: 22px 30px;
-      margin-bottom: 24px;
-      border: 1px solid #3b2a5a;
-    }
-    body.projector-mode .hero-stage-name {
-      font-size: 34px;
-    }
-    body.projector-mode .big-timer {
-      font-size: 64px;
-    }
-    body.projector-mode .schedule-list,
-    body.projector-mode .groups-container,
-    body.projector-mode .owner-container {
-      max-height: 65vh;
-    }
+    body.projector-mode .hero-stage-name { font-size: 32px; }
+    body.projector-mode .big-timer { font-size: 60px; }
 
     footer { margin-top: 8px; font-size: 11px; text-align: center; color: #475569; }
   </style>
@@ -226,6 +256,7 @@
         <div class="clock-display" id="realtimeClock">現在時間：--:--:--</div>
       </div>
       <div class="header-actions">
+        <button class="btn-mode-toggle" id="viewModeToggleBtn" onclick="toggleMainViewMode()">⏱️ 切換時段矩陣總覽</button>
         <button class="btn-projector" id="projectorToggleBtn" onclick="toggleProjectorMode()">🖥️ 投影模式</button>
         <button class="btn-sheet" id="openSheetBtn" onclick="openSpreadsheet()" title="開啟 Google 試算表">📊 試算表細流</button>
         <button class="btn-success" onclick="saveCurrentToHistory()">💾 封存歷史</button>
@@ -257,8 +288,8 @@
       </div>
     </div>
 
-    <!-- 三欄版面 -->
-    <div class="main-grid">
+    <!-- 模式 A：三欄操作版面 (預設) -->
+    <div class="main-grid" id="classicViewGrid">
       
       <!-- 欄位 1：細流時間設定 -->
       <div class="panel">
@@ -296,6 +327,19 @@
 
     </div>
 
+    <!-- 模式 B：⏱️ 全局時段一覽表 / 甘特排班矩陣 (Timeline View) -->
+    <div class="timeline-view-panel" id="timelineViewPanel">
+      <div class="panel-header">
+        <div class="panel-title">⏱️ 全員時段排班矩陣（橫向一覽表）</div>
+        <span style="font-size: 11px; color: #94a3b8;">清楚掌握每位夥伴在每個時間點該做什麼、誰正處於空閒</span>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="timeline-table" id="timelineTable">
+          <!-- 動態渲染時段矩陣 -->
+        </table>
+      </div>
+    </div>
+
     <!-- 歷史專區摺疊面板 -->
     <div class="history-panel collapsed" id="historyPanel">
       <div class="history-header" onclick="toggleHistoryPanel()">
@@ -312,7 +356,7 @@
       </div>
     </div>
 
-    <footer>高大社團・溫柔控場場佈系統 v13.0 (含投影戰情模式與當前執勤高亮)</footer>
+    <footer>高大社團・溫柔控場場佈系統 v14.0 (支援全員時段排班矩陣一覽)</footer>
   </div>
 
   <script>
@@ -352,6 +396,7 @@
     let collapsedGroupIds = new Set();
     let areAllCollapsed = false;
     let isProjectorMode = false;
+    let currentViewMode = 'classic'; // 'classic' 或 'timeline'
     let currentFilterOwner = 'ALL';
     let announcedMilestones = new Set();
     let initialBroadcastIgnored = false;
@@ -384,7 +429,6 @@
     window.onload = function() {
       setInterval(updateClockAndTimer, 1000);
 
-      // 監聽鍵盤 Esc 退出投影模式
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && isProjectorMode) {
           toggleProjectorMode();
@@ -418,6 +462,7 @@
         }
         renderSchedule();
         renderOwnerSummary();
+        renderTimelineMatrix();
       });
 
       db.ref('event_groups').on('value', (snapshot) => {
@@ -434,6 +479,7 @@
         updateFilterOptions();
         renderGroups();
         renderOwnerSummary();
+        renderTimelineMatrix();
       });
 
       db.ref('history_events').on('value', (snapshot) => {
@@ -456,7 +502,144 @@
     function saveScheduleToCloud() { db.ref('event_schedule').set(schedule); }
     function saveGroupsToCloud() { db.ref('event_groups').set(groups); }
 
-    // 🖥️ 投影模式切換函式
+    // ⏱️ 切換檢視模式（清單 vs 全局時段一覽）
+    function toggleMainViewMode() {
+      const classicGrid = document.getElementById('classicViewGrid');
+      const timelinePanel = document.getElementById('timelineViewPanel');
+      const btn = document.getElementById('viewModeToggleBtn');
+
+      if (currentViewMode === 'classic') {
+        currentViewMode = 'timeline';
+        classicGrid.style.display = 'none';
+        timelinePanel.style.display = 'block';
+        btn.innerText = "📋 切換回三欄清單";
+        btn.classList.replace('btn-mode-toggle', 'btn-slate');
+        renderTimelineMatrix();
+      } else {
+        currentViewMode = 'classic';
+        classicGrid.style.display = 'grid';
+        timelinePanel.style.display = 'none';
+        btn.innerText = "⏱️ 切換時段矩陣總覽";
+        btn.classList.replace('btn-slate', 'btn-mode-toggle');
+      }
+    }
+
+    // 渲染「全員時段排班矩陣（甘特排程總表）」
+    function renderTimelineMatrix() {
+      const table = document.getElementById('timelineTable');
+      if (!table) return;
+
+      const sortedSchedule = [...schedule].sort((a, b) => a.time.localeCompare(b.time));
+      if (sortedSchedule.length === 0) {
+        table.innerHTML = `<tr><td style="color:#64748b;">請先在左側建立細流階段。</td></tr>`;
+        return;
+      }
+
+      // 提取所有幹部名單
+      const ownersSet = new Set();
+      groups.forEach(g => {
+        (g.tasks || []).forEach(t => {
+          parseOwners(t.owner).forEach(o => ownersSet.add(o));
+        });
+      });
+      const allOwners = Array.from(ownersSet).sort((a, b) => a.localeCompare(b, 'zh-TW'));
+
+      if (allOwners.length === 0) {
+        table.innerHTML = `<tr><td style="color:#64748b;">目前各組尚未建立包含負責人的事項。</td></tr>`;
+        return;
+      }
+
+      // 建立時段區間列（如 17:00~17:15、17:15~17:30...）
+      const timeSlots = [];
+      for (let i = 0; i < sortedSchedule.length - 1; i++) {
+        timeSlots.push({
+          start: sortedSchedule[i].time,
+          end: sortedSchedule[i + 1].time,
+          name: sortedSchedule[i].name
+        });
+      }
+      // 最後一階段延伸
+      const lastStage = sortedSchedule[sortedSchedule.length - 1];
+      timeSlots.push({
+        start: lastStage.time,
+        end: '結束',
+        name: lastStage.name
+      });
+
+      const now = new Date();
+      const nowStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+      // 建立表頭 Header
+      let headerHtml = `
+        <thead>
+          <tr>
+            <th style="min-width: 100px;">幹部人員</th>
+            ${timeSlots.map(slot => {
+              const isCurrentCol = (slot.end !== '結束' && slot.start <= nowStr && nowStr < slot.end);
+              return `
+                <th class="${isCurrentCol ? 'current-col' : ''}">
+                  <div>${escapeHtml(slot.start)} ~ ${escapeHtml(slot.end)}</div>
+                  <div style="font-size:10px; opacity:0.8; margin-top:2px;">【${escapeHtml(slot.name)}】</div>
+                </th>
+              `;
+            }).join('')}
+          </tr>
+        </thead>
+      `;
+
+      // 建立每一位幹部的橫列
+      let bodyHtml = '<tbody>';
+      allOwners.forEach(owner => {
+        // 如果有開啟上方身分篩選且不符，則過濾
+        if (currentFilterOwner !== 'ALL' && owner !== currentFilterOwner) return;
+
+        bodyHtml += `<tr>`;
+        bodyHtml += `<td class="timeline-person-name">👤 ${escapeHtml(owner)}</td>`;
+
+        timeSlots.forEach(slot => {
+          // 搜尋該幹部在此時段內是否有任務
+          const matchedTasks = [];
+          groups.forEach(group => {
+            (group.tasks || []).forEach(task => {
+              const owners = parseOwners(task.owner);
+              if (!owners.includes(owner)) return;
+
+              const tStart = task.startTime || task.time || '';
+              const tEnd = task.endTime || tStart;
+
+              let isCovered = false;
+              if (slot.end === '結束') {
+                isCovered = (tStart >= slot.start);
+              } else {
+                isCovered = (tStart < slot.end && tEnd > slot.start) || (tStart >= slot.start && tStart < slot.end);
+              }
+
+              if (isCovered) {
+                matchedTasks.push({ ...task, groupName: group.name });
+              }
+            });
+          });
+
+          if (matchedTasks.length > 0) {
+            const pills = matchedTasks.map(t => `
+              <div class="timeline-task-pill ${t.done ? 'is-done' : ''}">
+                <div style="font-size:9px; color:#38bdf8;">[${escapeHtml(t.groupName)}]</div>
+                <div>${escapeHtml(t.text)}</div>
+              </div>
+            `).join('');
+            bodyHtml += `<td>${pills}</td>`;
+          } else {
+            bodyHtml += `<td><span class="timeline-idle-cell">空閒</span></td>`;
+          }
+        });
+
+        bodyHtml += `</tr>`;
+      });
+      bodyHtml += '</tbody>';
+
+      table.innerHTML = headerHtml + bodyHtml;
+    }
+
     function toggleProjectorMode() {
       isProjectorMode = !isProjectorMode;
       document.body.classList.toggle('projector-mode', isProjectorMode);
@@ -465,7 +648,6 @@
       if (isProjectorMode) {
         btn.innerText = "❌ 退出投影 (Esc)";
         btn.classList.replace('btn-projector', 'btn-pink');
-        // 嘗試自動進入瀏覽器全螢幕
         if (document.documentElement.requestFullscreen) {
           document.documentElement.requestFullscreen().catch(() => {});
         }
@@ -610,15 +792,14 @@
       }
       renderGroups();
       renderOwnerSummary();
+      renderTimelineMatrix();
     }
 
-    // 時鐘、倒數、逾期與「⚡ 當前執勤高亮」判斷
     function updateClockAndTimer() {
       const now = new Date();
       const currentTimeStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
       document.getElementById('realtimeClock').innerText = `現在時間：${now.toLocaleTimeString('zh-TW', { hour12: false })}`;
 
-      // 核對逾期與當前執勤任務
       checkDutyAndOverdueStatus(currentTimeStr);
 
       if (!schedule || schedule.length === 0) {
@@ -692,7 +873,6 @@
       }
     }
 
-    // ⚡ 檢查當前執勤高亮 & 逾期狀態
     function checkDutyAndOverdueStatus(nowStr) {
       document.querySelectorAll('.task-item[data-task-start]').forEach(itemEl => {
         const isDone = itemEl.getAttribute('data-task-done') === 'true';
@@ -706,7 +886,6 @@
           return;
         }
 
-        // 1. 判斷是否正處於「當前時段」執勤中 (start <= now <= end)
         const isCurrentDuty = (start <= nowStr && nowStr <= end);
         if (isCurrentDuty) {
           itemEl.classList.add('current-duty');
@@ -714,7 +893,6 @@
           itemEl.classList.remove('current-duty');
         }
 
-        // 2. 判斷逾期 (超過 end 且未完成)
         if (nowStr > end) {
           if (timeTag) timeTag.classList.add('overdue');
         } else {
@@ -852,7 +1030,6 @@
       renderGroups();
     }
 
-    // 各組事項管理
     function renderGroups() {
       const container = document.getElementById('groupsContainer');
       container.innerHTML = '';
@@ -980,7 +1157,6 @@
       return idleGaps;
     }
 
-    // 負責人看板
     function renderOwnerSummary() {
       const container = document.getElementById('ownerContainer');
       container.innerHTML = '';
